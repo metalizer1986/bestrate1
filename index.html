@@ -11,10 +11,19 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --green: #00ff88;
+            --red: #ff4444;
+            --orange: #ffaa00;
+            --blue: #7aa3ff;
+            --bg-dark: #0a0e27;
+            --bg-card: #1a1e3e;
+        }
+        
         body {
             font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1e3e 100%);
-            color: #00ff88;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+            color: var(--green);
             padding: min(20px, 3vw);
             min-height: 100vh;
             font-size: clamp(10px, 1.5vw, 14px);
@@ -37,25 +46,9 @@
             overflow: hidden;
         }
         
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(0,255,136,0.1), transparent);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
         h1 {
             font-size: clamp(18px, 3vw, 32px);
-            color: #00ff88;
+            color: var(--green);
             text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
             margin-bottom: 10px;
             position: relative;
@@ -77,14 +70,20 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #ff4444;
+            background: var(--red);
             animation: pulse-red 1.5s infinite;
         }
         
-        .status-live { background: #00ff88; }
+        .status-live { background: var(--green); animation: pulse-green 1.5s infinite; }
+        
         @keyframes pulse-red {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
         
         .signal-display {
@@ -101,19 +100,19 @@
         }
         
         .signal-up {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc66 50%, #00aa55 100%);
-            color: #0a0e27;
+            background: linear-gradient(135deg, var(--green) 0%, #00cc66 50%, #00aa55 100%);
+            color: var(--bg-dark);
         }
         
         .signal-down {
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 50%, #aa0000 100%);
+            background: linear-gradient(135deg, var(--red) 0%, #cc0000 50%, #aa0000 100%);
             color: #fff;
         }
         
         .signal-pressure {
-            background: linear-gradient(135deg, #ffaa00 0%, #ff8800 50%, #ff6600 100%);
-            color: #0a0e27;
-            animation: pressureShake 0.5s infinite;
+            background: linear-gradient(135deg, var(--orange) 0%, #ff8800 50%, #ff6600 100%);
+            color: var(--bg-dark);
+            animation: pressureShake 0.5s infinite !important;
         }
         
         @keyframes signalPulse {
@@ -125,27 +124,6 @@
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-3px); }
             75% { transform: translateX(3px); }
-        }
-        
-        .alert-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            animation: alertFlash 0.3s infinite;
-            pointer-events: none;
-        }
-        
-        @keyframes alertFlash {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
         }
         
         .grid {
@@ -162,24 +140,6 @@
             padding: min(20px, 2.5vw);
             backdrop-filter: blur(15px);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #00ff88, #7aa3ff, #ffaa00, #ff4444);
-            animation: gradientShift 3s infinite;
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0%; }
-            100% { background-position: 200%; }
         }
         
         .card:hover {
@@ -190,7 +150,7 @@
         
         .card-title {
             font-size: clamp(15px, 2.2vw, 20px);
-            color: #00ff88;
+            color: var(--green);
             margin-bottom: min(18px, 2.5vw);
             padding-bottom: 12px;
             border-bottom: 2px solid rgba(0, 255, 136, 0.4);
@@ -210,7 +170,7 @@
         }
         
         .info-label {
-            color: #7aa3ff;
+            color: var(--blue);
             font-size: clamp(12px, 1.6vw, 14px);
             font-weight: 500;
         }
@@ -223,21 +183,9 @@
             text-align: right;
         }
         
-        .positive { color: #00ff88 !important; text-shadow: 0 0 5px rgba(0,255,136,0.5); }
-        .negative { color: #ff4444 !important; text-shadow: 0 0 5px rgba(255,68,68,0.5); }
-        .neutral { color: #ffaa00 !important; text-shadow: 0 0 5px rgba(255,170,0,0.5); }
-        
-        .indicator-list {
-            list-style: none;
-        }
-        
-        .indicator-item {
-            padding: min(10px, 1.5vw) 0;
-            font-size: clamp(12px, 1.6vw, 14px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .positive { color: var(--green) !important; }
+        .negative { color: var(--red) !important; }
+        .neutral { color: var(--orange) !important; }
         
         .confidence-bar {
             width: 100%;
@@ -283,7 +231,7 @@
         
         .stat-label {
             font-size: clamp(11px, 1.4vw, 12px);
-            color: #7aa3ff;
+            color: var(--blue);
             margin-bottom: 8px;
             font-weight: 500;
         }
@@ -295,7 +243,7 @@
         
         .update-time {
             text-align: center;
-            color: #7aa3ff;
+            color: var(--blue);
             margin-top: min(25px, 4vw);
             font-size: clamp(12px, 1.8vw, 15px);
             font-weight: 500;
@@ -317,14 +265,14 @@
         }
         
         .status-connected {
-            border-color: #00ff88;
-            color: #00ff88;
+            border-color: var(--green);
+            color: var(--green);
             background: rgba(0,255,136,0.1);
         }
         
         .status-disconnected {
-            border-color: #ff4444;
-            color: #ff4444;
+            border-color: var(--red);
+            color: var(--red);
             background: rgba(255,68,68,0.1);
             animation: blink 1s infinite;
         }
@@ -335,21 +283,15 @@
         }
         
         @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            .connection-status {
-                position: static;
-                margin: 20px auto;
-                display: block;
-            }
+            .grid { grid-template-columns: 1fr; }
+            .connection-status { position: static; margin: 20px auto; display: block; }
         }
     </style>
 </head>
 <body>
-    <div class="connection-status" id="connectionStatus">
-        <span class="status-dot" id="statusDot"></span>
-        Подключение...
+    <div class="connection-status" id="badgeWS">
+        <span class="status-dot" id="dotBTC"></span>
+        <span id="statusText">Подключение...</span>
     </div>
     
     <div class="container">
@@ -360,63 +302,64 @@
             </div>
         </div>
         
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: clamp(32px, 6vw, 64px); font-weight: bold; color: var(--blue);">
+                <span id="hdrPrice">$0</span>
+                <span id="hdrChange" style="font-size: 0.6em; margin-left: 10px;">+0.00%</span>
+            </div>
+        </div>
+        
         <div id="signalDisplay" class="signal-display">
             🚀 Ждем данные с Binance...
         </div>
         
         <div class="grid">
             <div class="card">
-                <div class="card-title">📊 Live Market Data <span id="priceUpdate" style="font-size:0.8em;color:#7aa3ff;">●</span></div>
+                <div class="card-title">📊 Live Market Data</div>
                 <div class="info-row">
-                    <span class="info-label">💰 Текущая цена:</span>
-                    <span class="info-value" id="currentPrice">$0</span>
+                    <span class="info-label">💰 Цена:</span>
+                    <span class="info-value" id="btcP">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">📈 Изменение 24ч:</span>
-                    <span class="info-value" id="priceChange24h">0%</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">📊 Объем 24ч:</span>
-                    <span class="info-value" id="volume24h">$0</span>
+                    <span class="info-label">📈 Изменение:</span>
+                    <span class="info-value" id="btcCh">+0.00%</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">🔺 High 24ч:</span>
-                    <span class="info-value" id="high24h">$0</span>
+                    <span class="info-value" id="btcHi">$0</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">🔻 Low 24ч:</span>
-                    <span class="info-value" id="low24h">$0</span>
+                    <span class="info-value" id="btcLo">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">📊 Volume:</span>
+                    <span class="info-value" id="btcVol">0 BTC</span>
                 </div>
             </div>
             
             <div class="card">
                 <div class="card-title">🎯 Технические Индикаторы</div>
-                <ul class="indicator-list">
-                    <li class="indicator-item">
-                        <span>RSI (14)</span>
-                        <span id="rsi" class="neutral">50.0</span>
-                    </li>
-                    <li class="indicator-item">
-                        <span>MACD Signal</span>
-                        <span id="macd" class="neutral">0.00</span>
-                    </li>
-                    <li class="indicator-item">
-                        <span>Stochastic %K</span>
-                        <span id="stoch">50.0%</span>
-                    </li>
-                    <li class="indicator-item">
-                        <span>EMA Momentum</span>
-                        <span id="emaMomentum">Нейтрально</span>
-                    </li>
-                    <li class="indicator-item">
-                        <span>Volume Trend</span>
-                        <span id="volumeTrend">Стабильный</span>
-                    </li>
-                    <li class="indicator-item">
-                        <span>Trend Strength</span>
-                        <span id="trendStrength">Умеренный</span>
-                    </li>
-                </ul>
+                <div class="info-row">
+                    <span class="info-label">RSI (14)</span>
+                    <span class="info-value" id="rsi" class="neutral">50.0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">MACD</span>
+                    <span class="info-value" id="macd" class="neutral">0.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">EMA Momentum</span>
+                    <span class="info-value" id="emaMomentum">Нейтрально</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Volume Trend</span>
+                    <span class="info-value" id="volumeTrend">Стабильный</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Trend Strength</span>
+                    <span class="info-value" id="trendStrength">Умеренный</span>
+                </div>
             </div>
             
             <div class="card">
@@ -424,10 +367,6 @@
                 <div class="info-row">
                     <span class="info-label">🎯 Сопротивление:</span>
                     <span class="info-value positive" id="resistance1">$0</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">💹 Текущая:</span>
-                    <span class="info-value neutral" id="currentPrice2">$0</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">🛡️ Поддержка:</span>
@@ -447,7 +386,7 @@
                 <div class="card-title">📈 Performance Stats</div>
                 <div class="stats-grid">
                     <div class="stat-box">
-                        <div class="stat-label">Точность 24ч</div>
+                        <div class="stat-label">Точность</div>
                         <div class="stat-value positive" id="accuracy">0%</div>
                     </div>
                     <div class="stat-box">
@@ -471,9 +410,6 @@
             <div class="confidence-bar">
                 <div id="confidenceBar" class="confidence-fill" style="width: 0%;">0%</div>
             </div>
-            <div style="text-align: center; margin-top: 12px; color: #7aa3ff; font-size: clamp(13px, 2vw, 16px);">
-                <span id="confidenceText">Инициализация...</span>
-            </div>
         </div>
         
         <div class="update-time" id="updateTime">
@@ -482,306 +418,290 @@
     </div>
 
     <script>
-        // 🎯 Binance WebSocket + Trading Logic
-        class BinanceLiveSignals {
-            constructor() {
-                this.ws = null;
-                this.priceHistory = [];
-                this.candles = []; // Для расчета индикаторов
-                this.currentPrice = 0;
-                this.stats = { wins: 0, losses: 0, total: 0, streak: 0 };
-                this.lastSignal = null;
-                this.signalHistory = [];
-                this.isConnected = false;
-                
-                this.initWebSocket();
-                this.setupIndicators();
-            }
+        // ═════════════════════════════════════════════════════════════════
+        // STATE - Global Trading State
+        // ═════════════════════════════════════════════════════════════════
+        const S = {
+            wsOK: false,
+            btc: {
+                price: 0,
+                prev: 0,
+                hi: 0,
+                lo: 0,
+                vol: 0,
+                ch: 0
+            },
+            priceHist: [],
+            candles: []
+        };
+        
+        let wsRef = null;
+        let priceUpdateTimer = null;
+        let signalUpdateTimer = null;
+        
+        // ═════════════════════════════════════════════════════════════════
+        // UTILITY FUNCTIONS
+        // ═════════════════════════════════════════════════════════════════
+        const $ = (id) => document.getElementById(id);
+        
+        const txt = (id, text) => {
+            const el = $(id);
+            if (el) el.textContent = text;
+        };
+        
+        const fmt = (num, decimals) => {
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            }).format(num);
+        };
+        
+        // ═════════════════════════════════════════════════════════════════
+        // BINANCE WEBSOCKET
+        // ═════════════════════════════════════════════════════════════════
+        function wsConnect() {
+            if (wsRef && wsRef.readyState < 2) return;
             
-            initWebSocket() {
-                // 🔥 Binance Spot + Futures Streams (24hr ticker + kline 1m)
-                const streams = [                    'btcusdt@ticker',     // 24hr rolling ticker
-                    'btcusdt@kline_1m',   // 1min candles для индикаторов
-                    'btcusdt@miniTicker'  // Быстрые обновления цены
-                ].join('/');
-                
-                const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
-                
-                this.ws = new WebSocket(wsUrl);
-                
-                this.ws.onopen = () => {
-                    this.setStatus('🟢 ПОДКЛЮЧЕНО к Binance Live', true);
-                    console.log('✅ Binance WebSocket подключен');
-                };
-                
-                this.ws.onmessage = (event) => {
-                    const message = JSON.parse(event.data);
-                    
-                    if (message.stream && message.data) {
-                        this.handleStreamData(message.stream, message.data);
-                    }
-                };
-                
-                this.ws.onclose = () => {
-                    this.setStatus('🔴 ОТКЛЮЧЕНО - Переподключение...', false);
-                    setTimeout(() => this.initWebSocket(), 3000);
-                };
-                
-                this.ws.onerror = (error) => {
-                    console.error('WebSocket Error:', error);
-                    this.setStatus('❌ ОШИБКА - Переподключение...', false);
-                };
-            }
+            wsRef = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
             
-            handleStreamData(stream, data) {
-                if (stream.includes('ticker') || stream.includes('miniTicker')) {
-                    this.updateLivePrice(data);
-                } else if (stream.includes('kline_1m')) {
-                    this.updateCandles(data.k);
-                    this.calculateIndicators();
-                    this.generateTradingSignal();
+            wsRef.onopen = () => {
+                S.wsOK = true;
+                const badgeWS = $('badgeWS');
+                badgeWS.className = 'connection-status status-connected';
+                txt('statusText', '● Binance LIVE');
+                $('dotBTC').className = 'status-dot status-live';
+                $('statusIndicator').textContent = '✅ WebSocket подключен к Binance';
+                console.log('✅ WebSocket connected to Binance');
+            };
+            
+            wsRef.onmessage = (e) => {
+                try {
+                    const d = JSON.parse(e.data);
+                    S.btc.prev = S.btc.price;
+                    S.btc.price = +d.c;    // Last price
+                    S.btc.hi = +d.h;       // High price
+                    S.btc.lo = +d.l;       // Low price
+                    S.btc.vol = +d.v;      // Volume
+                    S.btc.ch = +d.P;       // Price change percent
+                    onTick();
+                } catch (err) {
+                    console.error('Error parsing websocket data:', err);
                 }
-            }
+            };
             
-            updateLivePrice(data) {
-                this.currentPrice = parseFloat(data.c);
-                document.getElementById('currentPrice').textContent = `$${this.currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('currentPrice2').textContent = `$${this.currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                
-                // 24h изменения
-                const change24h = parseFloat(data.P);
-                const changeClass = change24h >= 0 ? 'positive' : 'negative';
-                document.getElementById('priceChange24h').innerHTML = 
-                    `<span class="${changeClass}">${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%</span>`;
-                
-                document.getElementById('volume24h').textContent = `$${(parseFloat(data.v) * this.currentPrice / 1e9).toFixed(1)}B`;
-                document.getElementById('high24h').textContent = `$${parseFloat(data.h).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('low24h').textContent = `$${parseFloat(data.l).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                
-                document.getElementById('priceUpdate').textContent = `● ${new Date().toLocaleTimeString('ru-RU', {timeStyle: 'short'})}`;
-            }
+            wsRef.onclose = () => {
+                S.wsOK = false;
+                const badgeWS = $('badgeWS');
+                badgeWS.className = 'connection-status status-disconnected';
+                txt('statusText', '✖ Binance offline');
+                $('dotBTC').className = 'status-dot';
+                $('statusIndicator').textContent = '⏳ Переподключение...';
+                setTimeout(wsConnect, 3000);
+            };
             
-            updateCandles(kline) {
-                const candle = {
-                    open: parseFloat(kline[1]),
-                    high: parseFloat(kline[2]),
-                    low: parseFloat(kline[3]),
-                    close: parseFloat(kline[4]),
-                    volume: parseFloat(kline[5]),
-                    time: parseInt(kline)
-                };
-                
-                this.candles.push(candle);
-                if (this.candles.length > 200) this.candles.shift(); // Храним 200 свечей
-            }
-            
-            setupIndicators() {
-                // EMA, RSI, MACD расчеты
-                this.emaFast = [];
-                this.emaSlow = [];
-                this.rsiValues = [];
-            }
-            
-            calculateIndicators() {
-                if (this.candles.length < 50) return;
-                
-                const closes = this.candles.map(c => c.close);
-                const volumes = this.candles.map(c => c.volume);
-                
-                // 🔥 RSI (14)
-                const rsi = this.calculateRSI(closes, 14);
-                const rsiClass = rsi < 30 ? 'positive' : rsi > 70 ? 'negative' : 'neutral';
-                document.getElementById('rsi').outerHTML = `<span class="${rsiClass}">${rsi.toFixed(1)}</span>`;
-                
-                // 🔥 EMA Momentum (12 vs 26)
-                const ema12 = this.calculateEMA(closes, 12);
-                const ema26 = this.calculateEMA(closes, 26);
-                const emaMomentum = ema12 > ema26 ? '<span class="positive">Бычий</span>' : '<span class="negative">Медвежий</span>';
-                document.getElementById('emaMomentum').innerHTML = emaMomentum;
-                
-                // 🔥 MACD Signal (упрощенный)
-                const macdLine = ema12 - ema26;
-                const macdClass = macdLine > 0 ? 'positive' : 'negative';
-                document.getElementById('macd').outerHTML = `<span class="${macdClass}">+${(macdLine).toFixed(2)}</span>`;
-                
-                // Volume Trend
-                const volTrend = volumes.slice(-10).reduce((a,b) => a+b, 0) / 10 > 
-                                volumes.slice(-20,-10).reduce((a,b) => a+b, 0) / 10 ? 'Растущий' : 'Падающий';
-                document.getElementById('volumeTrend').innerHTML = 
-                    `<span class="${volTrend === 'Растущий' ? 'positive' : 'negative'}">${volTrend}</span>`;
-            }
-            
-            calculateRSI(prices, period = 14) {
-                if (prices.length < period + 1) return 50;
-                
-                let gains = 0, losses = 0;
-                for (let i = prices.length - period; i < prices.length; i++) {
-                    const change = prices[i] - prices[i-1];
-                    if (change > 0) gains += change;
-                    else losses -= change;
-                }
-                
-                const avgGain = gains / period;
-                const avgLoss = losses / period;
-                const rs = avgGain / avgLoss;
-                return 100 - (100 / (1 + rs));
-            }
-            
-            calculateEMA(prices, period) {
-                if (prices.length < period) return 0;
-                const k = 2 / (period + 1);
-                let ema = prices[prices.length - period];
-                for (let i = prices.length - period + 1; i < prices.length; i++) {
-                    ema = prices[i] * k + ema * (1 - k);
-                }
-                return ema;
-            }
-            
-            generateTradingSignal() {
-                if (this.candles.length < 50) return;
-                
-                const recentCandles = this.candles.slice(-20);
-                const rsi = this.calculateRSI(this.candles.map(c => c.close));
-                const priceTrend = recentCandles[recentCandles.length-1].close > recentCandles[recentCandles.length-10].close;
-                const volumeTrend = recentCandles.slice(-5).reduce((sum, c) => sum + c.volume, 0) > 
-                                   recentCandles.slice(-10, -5).reduce((sum, c) => sum + c.volume, 0);
-                
-                let bullishScore = 0, bearishScore = 0;
-                
-                // 🎯 Trading Logic
-                if (rsi < 35 && priceTrend) bullishScore += 3;
-                if (rsi > 65 && !priceTrend) bearishScore += 3;
-                if (volumeTrend && priceTrend) bullishScore += 2;
-                if (recentCandles[recentCandles.length-1].close > recentCandles[recentCandles.length-1].open) bullishScore += 1;
-                
-                const signal = bullishScore > bearishScore ? 'UP' : 'DOWN';
-                const confidence = Math.min(95, 50 + Math.abs(bullishScore - bearishScore) * 8 + (Math.random() * 10));
-                
-                this.updateSignalDisplay(signal, confidence);
-                this.updateLevels();
-                this.updateConfidence(confidence);
-                this.trackPerformance(signal);
-            }
-            
-            updateSignalDisplay(signal, confidence) {
-                const display = document.getElementById('signalDisplay');
-                const alertOverlay = display.querySelector('.alert-overlay') || 
-                    document.createElement('div');
-                alertOverlay.className = 'alert-overlay';
-                
-                if (confidence > 85) {
-                    display.classList.add('signal-pressure');
-                    alertOverlay.textContent = signal === 'UP' ? '🚀 СИЛЬНЫЙ BUY!' : '📉 СИЛЬНЫЙ SELL!';
-                    if (!display.contains(alertOverlay)) display.appendChild(alertOverlay);
-                } else {
-                    display.classList.remove('signal-pressure');
-                    if (display.contains(alertOverlay)) display.removeChild(alertOverlay);
-                }
-                
-                display.className = `signal-display signal-${signal.toLowerCase()}`;
-                
-                display.innerHTML = signal === 'UP' 
-                    ? (confidence > 85 ? '🚀🚀🚀 ПОКУПАТЬ СИЛЬНО!' : '🚀 UP - ПОКУПАТЬ')
-                    : (confidence > 85 ? '📉📉📉 ПРОДАВАТЬ СИЛЬНО!' : '📉 DOWN - ПРОДАВАТЬ');
-            }
-            
-            updateLevels() {
-                const volatility = this.candles.slice(-20).reduce((max, c, i, arr) => 
-                    Math.max(max, Math.max(...arr.slice(Math.max(0, i-5), i+1).map(c => c.high - c.low))), 0);
-                
-                const atr = volatility / 20 * 1.5;
-                const resistance = this.currentPrice + atr * 1.5;
-                const support = this.currentPrice - atr * 1.5;
-                
-                document.getElementById('resistance1').textContent = `$${resistance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('support1').textContent = `$${support.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('stopLoss').textContent = `$${(this.currentPrice - atr).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                document.getElementById('takeProfit').textContent = `$${(this.currentPrice + atr * 2).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            }
-            
-            updateConfidence(confidence) {
-                const bar = document.getElementById('confidenceBar');
-                bar.style.width = `${confidence}%`;
-                
-                if (confidence > 80) {
-                    bar.style.background = 'linear-gradient(90deg, #00ff88, #00cc66)';
-                    bar.style.color = '#0a0e27';
-                    document.getElementById('confidenceText').innerHTML = 
-                        `<span class="positive">🔥 ВЫСОКАЯ уверенность</span>`;
-                } else if (confidence > 60) {
-                    bar.style.background = 'linear-gradient(90deg, #ffaa00, #ff8800)';
-                    bar.style.color = '#0a0e27';
-                    document.getElementById('confidenceText').innerHTML = 
-                        `<span class="neutral">⚡ Хороший сигнал</span>`;
-                } else {
-                    bar.style.background = 'linear-gradient(90deg, #ff6666, #ff4444)';
-                    bar.style.color = '#fff';
-                    document.getElementById('confidenceText').innerHTML = 
-                        `<span class="negative">📊 Средняя уверенность</span>`;
-                }
-                
-                bar.textContent = `${confidence.toFixed(1)}%`;
-            }
-            
-            trackPerformance(signal) {
-                // Симуляция результатов для статистики
-                setTimeout(() => {
-                    if (Math.random() > 0.3) { // 70% win rate
-                        this.stats.wins++;
-                        this.stats.streak = Math.max(1, this.stats.streak + 1);
-                    } else {
-                        this.stats.losses++;
-                        this.stats.streak = Math.min(-1, this.stats.streak - 1);
-                    }
-                    this.stats.total++;
-                    
-                    this.updateStats();
-                }, 30000); // Проверка через 30 сек
-            }
-            
-            updateStats() {
-                const accuracy = this.stats.total > 0 ? (this.stats.wins / this.stats.total * 100).toFixed(1) : 0;
-                document.getElementById('accuracy').textContent = `${accuracy}%`;
-                document.getElementById('totalSignals').textContent = this.stats.total;
-                document.getElementById('winLoss').textContent = `${this.stats.wins}/${this.stats.losses}`;
-                
-                const streakEl = document.getElementById('streak');
-                streakEl.textContent = Math.abs(this.stats.streak);
-                streakEl.className = this.stats.streak > 0 ? 'positive' : 'negative';
-            }
-            
-            setStatus(message, connected) {
-                const statusEl = document.getElementById('connectionStatus');
-                const dot = document.getElementById('statusDot');
-                const indicator = document.getElementById('statusIndicator');
-                
-                this.isConnected = connected;
-                statusEl.className = connected ? 'connection-status status-connected' : 'connection-status status-disconnected';
-                dot.style.background = connected ? '#00ff88' : '#ff4444';
-                statusEl.children[1].textContent = message;
-                indicator.textContent = message;
-                
-                document.getElementById('updateTime').textContent = 
-                    `⏰ Последнее обновление: ${new Date().toLocaleString('ru-RU', { 
-                        day: '2-digit', month: '2-digit', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit', second: '2-digit'
-                    })}`;
-            }
+            wsRef.onerror = () => {
+                console.error('WebSocket error');
+                wsRef.close();
+            };
         }
         
-        // 🚀 Запуск Live Signals
-        const signals = new BinanceLiveSignals();
-        
-        // Обновление времени каждую минуту
-        setInterval(() => {
-            if (signals.isConnected && signals.currentPrice > 0) {
-                document.getElementById('updateTime').textContent = 
-                    `⏰ Последнее обновление: ${new Date().toLocaleString('ru-RU', { 
-                        day: '2-digit', month: '2-digit', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit', second: '2-digit'
-                    })}`;
+        // ═════════════════════════════════════════════════════════════════
+        // PRICE TICK HANDLER
+        // ═════════════════════════════════════════════════════════════════
+        function onTick() {
+            const p = S.btc.price;
+            if (!p) return;
+            
+            // Header
+            txt('hdrPrice', '$' + p.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }));
+            
+            const hc = $('hdrChange');
+            if (hc) {
+                hc.textContent = (S.btc.ch >= 0 ? '+' : '') + S.btc.ch.toFixed(2) + '%';
+                hc.style.color = S.btc.ch >= 0 ? 'var(--green)' : 'var(--red)';
             }
-        }, 60000);
-    </script>
-</body>
-</html>
+            
+            // Left panel data
+            txt('btcP', '$' + p.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+            
+            const bc = $('btcCh');
+            if (bc) {
+                bc.textContent = (S.btc.ch >= 0 ? '+' : '') + S.btc.ch.toFixed(2) + '%';
+                bc.style.color = S.btc.ch >= 0 ? 'var(--green)' : 'var(--red)';
+            }
+            
+            txt('btcHi', '$' + S.btc.hi.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+            txt('btcLo', '$' + S.btc.lo.toLocaleString('en-US', { maximumFractionDigits: 0 }));
+            txt('btcVol', fmt(S.btc.vol / 1e8, 0) + ' BTC');
+            
+            // Price history for chart
+            const t = new Date().toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            S.priceHist.push({ t, p });
+            if (S.priceHist.length > 600) S.priceHist.shift();
+            
+            // Update current candle (1 minute)
+            if (S.candles.length) {
+                const last = S.candles[S.candles.length - 1];
+                const nowMin = Math.floor(Date.now() / 60000) * 60000;
+                
+                if (nowMin > last.time) {
+                    // New candle
+                    S.candles.push({
+                        time: nowMin,
+                        o: p,
+                        h: p,
+                        l: p,
+                        c: p,
+                        v: 0
+                    });
+                    if (S.candles.length > 200) S.candles.shift();
+                } else {
+                    // Update current candle
+                    last.c = p;
+                    last.h = Math.max(last.h, p);
+                    last.l = Math.min(last.l, p);
+                }
+            } else {
+                // Initialize first candle
+                const nowMin = Math.floor(Date.now() / 60000) * 60000;
+                S.candles.push({
+                    time: nowMin,
+                    o: p,
+                    h: p,
+                    l: p,
+                    c: p,
+                    v: 0
+                });
+            }
+            
+            // Calculate indicators and update signals
+            calculateIndicators();
+            updateSignal();
+            updateTime();
+        }
+        
+        // ═════════════════════════════════════════════════════════════════
+        // TECHNICAL INDICATORS
+        // ═════════════════════════════════════════════════════════════════
+        function calculateIndicators() {
+            if (S.candles.length < 50) return;
+            
+            const closes = S.candles.map(c => c.c);
+            const volumes = S.candles.map(c => c.v);
+            
+            // RSI (14)
+            const rsi = calculateRSI(closes, 14);
+            const rsiClass = rsi < 30 ? 'positive' : rsi > 70 ? 'negative' : 'neutral';
+            const rsiEl = $('rsi');
+            if (rsiEl) {
+                rsiEl.textContent = rsi.toFixed(1);
+                rsiEl.className = 'info-value ' + rsiClass;
+            }
+            
+            // EMA Momentum (12 vs 26)
+            const ema12 = calculateEMA(closes, 12);
+            const ema26 = calculateEMA(closes, 26);
+            const emaMomentum = ema12 > ema26 ? '<span class="positive">Бычий</span>' : '<span class="negative">Медвежий</span>';
+            const emaMom = $('emaMomentum');
+            if (emaMom) emaMom.innerHTML = emaMomentum;
+            
+            // MACD
+            const macdLine = ema12 - ema26;
+            const macdClass = macdLine > 0 ? 'positive' : 'negative';
+            const macdEl = $('macd');
+            if (macdEl) {
+                macdEl.textContent = (macdLine > 0 ? '+' : '') + macdLine.toFixed(2);
+                macdEl.className = 'info-value ' + macdClass;
+            }
+            
+            // Volume Trend
+            const avgVol10 = volumes.slice(-10).reduce((a,b) => a+b, 0) / 10;
+            const avgVol20 = volumes.slice(-20,-10).reduce((a,b) => a+b, 0) / 10;
+            const volTrend = avgVol10 > avgVol20 ? 'Растущий' : 'Падающий';
+            const volTrendEl = $('volumeTrend');
+            if (volTrendEl) {
+                volTrendEl.innerHTML = `<span class="${volTrend === 'Растущий' ? 'positive' : 'negative'}">${volTrend}</span>`;
+            }
+            
+            // Trend Strength
+            const priceChange = Math.abs(closes[closes.length-1] - closes[Math.max(0, closes.length-10)]) / closes[Math.max(0, closes.length-10)] * 100;
+            const trendStrength = priceChange > 2 ? 'Сильный' : priceChange > 0.5 ? 'Умеренный' : 'Слабый';
+            txt('trendStrength', trendStrength);
+        }
+        
+        function calculateRSI(prices, period = 14) {
+            if (prices.length < period + 1) return 50;
+            
+            let gains = 0, losses = 0;
+            for (let i = prices.length - period; i < prices.length; i++) {
+                const change = prices[i] - prices[i-1];
+                if (change > 0) gains += change;
+                else losses -= change;
+            }
+            
+            const avgGain = gains / period;
+            const avgLoss = losses / period;
+            const rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
+        }
+        
+        function calculateEMA(prices, period) {
+            if (prices.length < period) return prices[prices.length - 1];
+            
+            const k = 2 / (period + 1);
+            let ema = prices[prices.length - period];
+            
+            for (let i = prices.length - period + 1; i < prices.length; i++) {
+                ema = prices[i] * k + ema * (1 - k);
+            }
+            return ema;
+        }
+        
+        // ═════════════════════════════════════════════════════════════════
+        // TRADING SIGNALS
+        // ═════════════════════════════════════════════════════════════════
+        function updateSignal() {
+            if (S.candles.length < 50) return;
+            
+            const closes = S.candles.map(c => c.c);
+            const recentCandles = S.candles.slice(-20);
+            
+            const rsi = calculateRSI(closes);
+            const ema12 = calculateEMA(closes, 12);
+            const ema26 = calculateEMA(closes, 26);
+            
+            const priceTrend = recentCandles[recentCandles.length-1].c > recentCandles[Math.max(0, recentCandles.length-10)].c;
+            const emaTrend = ema12 > ema26;
+            
+            let bullScore = 0, bearScore = 0;
+            
+            // Scoring logic
+            if (rsi < 35) bullScore += 3;
+            if (rsi > 65) bearScore += 3;
+            if (rsi > 30 && rsi < 70 && priceTrend) bullScore += 2;
+            if (emaTrend) bullScore += 2;
+            if (!emaTrend) bearScore += 2;
+            
+            const signal = bullScore > bearScore ? 'UP' : 'DOWN';
+            const confidence = Math.min(95, 50 + Math.abs(bullScore - bearScore) * 10 + Math.random() * 15);
+            
+            // Display signal
+            const display = document.getElementById('signalDisplay');
+            display.className = 'signal-display signal-' + signal.toLowerCase();
+            
+            if (confidence > 80) {
+                display.classList.add('signal-pressure');
+                display.innerHTML = signal === 'UP' ? '🚀🚀🚀 ПОКУПАТЬ СИЛЬНО!' : '📉📉📉 ПРОДАВАТЬ СИЛЬНО!';
+            } else {
+                display.innerHTML = signal === 'UP' ? '🚀 UP - ПОКУПАТЬ' : '📉 DOWN - ПРОДАВАТЬ';
+            }
+            
+        
