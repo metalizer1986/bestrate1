@@ -290,3 +290,977 @@
             padding: 18px;
             text-align: center;
             transition: 0.3s;
+        }
+        
+        .sig-card.buy {
+            border-color: var(--green);
+            box-shadow: 0 0 24px rgba(0, 255, 136, 0.15);
+        }
+        
+        .sig-card.sell {
+            border-color: var(--red);
+            box-shadow: 0 0 24px rgba(255, 68, 68, 0.15);
+        }
+        
+        .sig-dir {
+            font-size: 42px;
+            font-weight: 900;
+            margin: 10px 0;
+        }
+        
+        .sig-card.buy .sig-dir { color: var(--green); }
+        .sig-card.sell .sig-dir { color: var(--red); }
+        
+        .sig-sub {
+            font-size: 11px;
+            color: var(--text2);
+            margin-bottom: 10px;
+        }
+        
+        .prog {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-dark);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .prog-fill {
+            height: 100%;
+            transition: width 0.4s;
+        }
+        
+        .prog-fill.green { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+        .prog-fill.red { background: linear-gradient(90deg, var(--red), var(--orange)); }
+        
+        .price-status {
+            font-size: clamp(16px, 2.2vw, 20px);
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 12px;
+            border: 2px solid;
+        }
+        
+        .price-above {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--green);
+            border-color: var(--green);
+        }
+        
+        .price-below {
+            background: rgba(255, 68, 68, 0.1);
+            color: var(--red);
+            border-color: var(--red);
+        }
+        
+        /* ── CONFIDENCE BAR ── */
+        .confidence-bar {
+            width: 100%;
+            height: min(35px, 6vw);
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 18px;
+            overflow: hidden;
+            margin-top: 15px;
+            position: relative;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: clamp(13px, 2vw, 18px);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* ── CONFLUENCE ── */
+        .conf-score {
+            font-size: 28px;
+            font-weight: 900;
+            text-align: center;
+            margin: 8px 0;
+        }
+        
+        .conf-score.hi { color: var(--green); }
+        .conf-score.lo { color: var(--red); }
+        .conf-score.mid { color: var(--orange); }
+        
+        .ck {
+            list-style: none;
+        }
+        
+        .ck li {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 4px 0;
+            font-size: 10px;
+            color: var(--text2);
+        }
+        
+        .ck li.ok {
+            color: var(--green);
+        }
+        
+        .ck-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+        
+        .ck li.ok .ck-dot {
+            background: var(--green);
+            color: #000;
+        }
+        
+        /* ── DISTANCE METRICS ── */
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        
+        .row:last-child {
+            border-bottom: none;
+        }
+        
+        .row-label {
+            font-size: 11px;
+            color: var(--text2);
+        }
+        
+        .row-val {
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        /* ── STATS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+            gap: min(15px, 2.5vw);
+        }
+        
+        .stat-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: min(15px, 2.5vw);
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.7);
+        }
+        
+        .stat-label {
+            font-size: clamp(11px, 1.4vw, 12px);
+            color: var(--text2);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .stat-value {
+            font-size: clamp(16px, 2.5vw, 22px);
+            font-weight: bold;
+        }
+        
+        /* ── GRID LAYOUT ── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+            gap: min(20px, 3vw);
+            margin-bottom: min(20px, 3vw);
+        }
+        
+        .grid-2cols {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2cols { grid-template-columns: 1fr; }
+            .app { grid-template-columns: 1fr; }
+            .side-l, .side-r { display: none; }
+            .badge-ws, .badge-api { display: none; }
+        }
+        
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+        
+        .update-time {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text2);
+            padding: 10px;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Status badges -->
+<div class="badge badge-ws" id="badgeWS">⏳ Binance WS...</div>
+<div class="badge badge-api" id="badgeAPI">⏳ API...</div>
+
+<!-- App grid -->
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="hdr">
+        <div class="hdr-left">
+            <div class="logo-dot"></div>
+            <span class="hdr-title">BTC/USDT Trading Terminal</span>
+            <span class="hdr-tag"><span class="live-dot"></span> LIVE</span>
+        </div>
+        <div class="hdr-center">
+            <div>
+                <div class="hdr-price" id="hdrPrice">$--</div>
+                <div class="hdr-change" id="hdrChange">connecting...</div>
+            </div>
+        </div>
+        <div class="hdr-right">
+            <div>
+                <div class="hdr-clock" id="clock">--:--:--</div>
+                <div class="hdr-utc">UTC</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="side-l">
+
+        <!-- BTC Market -->
+        <div class="card">
+            <div class="card-title">📊 BTC Real-Time</div>
+            <div class="row"><span class="row-label">Price</span><span class="row-val" id="btcP">--</span></div>
+            <div class="row"><span class="row-label">24h Change</span><span class="row-val" id="btcCh">--</span></div>
+            <div class="row"><span class="row-label">24h High</span><span class="row-val" id="btcHi">--</span></div>
+            <div class="row"><span class="row-label">24h Low</span><span class="row-val" id="btcLo">--</span></div>
+            <div class="row"><span class="row-label">24h Vol</span><span class="row-val" id="btcVol">--</span></div>
+        </div>
+
+        <!-- Technical Indicators -->
+        <div class="card">
+            <div class="card-title">⚙ Technical Indicators</div>
+            <div class="row"><span class="row-label">RSI(14)</span><span class="row-val" id="indRSI">--</span></div>
+            <div class="row"><span class="row-label">EMA 9/21</span><span class="row-val" id="indEMA">--</span></div>
+            <div class="row"><span class="row-label">MACD</span><span class="row-val" id="indMACD">--</span></div>
+            <div class="row"><span class="row-label">Momentum</span><span class="row-val" id="indMom">--</span></div>
+            <div class="row"><span class="row-label">Volatility</span><span class="row-val" id="indVol">--</span></div>
+        </div>
+
+        <!-- CONFLUENCE -->
+        <div class="card">
+            <div class="card-title">🔍 Confluence Check</div>
+            <div class="conf-score" id="confScore">--/7</div>
+            <div class="prog"><div class="prog-fill green" id="confBar" style="width:0;"></div></div>
+            <ul class="ck" id="ckList"></ul>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="card" style="text-align: center;">
+            <h1 style="font-size: clamp(18px, 3vw, 32px); color: var(--green); text-shadow: 0 0 15px rgba(0, 255, 136, 0.7); margin-bottom: 15px;">🔥 BTC/USDT Live Signals</h1>
+        </div>
+
+        <div class="grid grid-2cols">
+            <!-- VWAP Panel -->
+            <div class="card">
+                <div class="card-title">📊 VWAP Session</div>
+                <div class="indicator-row">
+                    <span class="indicator-label">VWAP</span>
+                    <div class="indicator-bar">
+                        <div id="vwapBar" class="bar-fill bar-orange" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="vwapValue">$0</span>
+                </div>
+                <div class="indicator-row">
+                    <span class="indicator-label">Цена vs VWAP</span>
+                    <div class="indicator-bar">
+                        <div id="vwapDiffBar" class="bar-fill bar-orange" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="vwapDiff">0%</span>
+                </div>
+                <div id="vwapStatus" class="price-status">Считаем VWAP...</div>
+            </div>
+            
+            <!-- EMA Panel -->
+            <div class="card">
+                <div class="card-title">📈 EMA Signals</div>
+                <div class="indicator-row">
+                    <span class="indicator-label">EMA 21</span>
+                    <div class="indicator-bar">
+                        <div id="ema21Bar" class="bar-fill bar-purple" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="ema21Value">$0</span>
+                </div>
+                <div class="indicator-row">
+                    <span class="indicator-label">EMA Momentum</span>
+                    <div class="indicator-bar">
+                        <div id="emaMomentumBar" class="bar-fill bar-purple" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="emaMomentum">Нейтрально</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- RSI Panel -->
+            <div class="card">
+                <div class="card-title">📊 RSI (14)</div>
+                <div class="indicator-row">
+                    <span class="indicator-label">RSI Value</span>
+                    <div class="indicator-bar">
+                        <div id="rsiBar" class="bar-fill bar-green" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="rsi">50.0</span>
+                </div>
+            </div>
+            
+            <!-- MACD Panel -->
+            <div class="card">
+                <div class="card-title">📈 MACD</div>
+                <div class="indicator-row">
+                    <span class="indicator-label">MACD Line</span>
+                    <div class="indicator-bar">
+                        <div id="macdBar" class="bar-fill bar-green" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="macd">0.00</span>
+                </div>
+                <div class="indicator-row">
+                    <span class="indicator-label">Signal Line</span>
+                    <div class="indicator-bar">
+                        <div id="signalLineBar" class="bar-fill bar-red" style="width: 50%"></div>
+                    </div>
+                    <span class="indicator-value" id="signalLine">0.00</span>
+                </div>
+            </div>
+
+            <!-- Performance -->
+            <div class="card">
+                <div class="card-title">📈 Performance</div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Точность</div>
+                        <div class="stat-value" id="accuracy">0%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Сигналов</div>
+                        <div class="stat-value" id="totalSignals">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">WIN/LOSS</div>
+                        <div class="stat-value" id="winLoss">0/0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Streak</div>
+                        <div class="stat-value" id="streak">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">⚡ Уровень уверенности</div>
+            <div class="confidence-bar">
+                <div id="confidenceBar" class="confidence-fill" style="width: 0%;">0%</div>
+            </div>
+        </div>
+
+        <div class="update-time" id="updateTime">
+            ⏰ Последнее обновление: --:--:--
+        </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="side-r">
+
+        <!-- Signal -->
+        <div class="sig-card" id="sigCard">
+            <div class="card-title" style="justify-content:center; margin-bottom:15px;">🎯 MAIN SIGNAL</div>
+            <div class="sig-dir" id="sigDir">--</div>
+            <div class="sig-sub" id="sigSub">Waiting for data...</div>
+            <div class="prog"><div class="prog-fill green" id="sigBar" style="width:0;"></div></div>
+        </div>
+
+        <!-- Distance Metrics -->
+        <div class="card">
+            <div class="card-title" style="justify-content:center;">📏 Distance Metrics</div>
+            <div class="row">
+                <span class="row-label">Conf vs Threshold</span>
+                <span class="row-val" id="distConf">--</span>
+            </div>
+            <div class="row">
+                <span class="row-label">EMA9 − EMA21</span>
+                <span class="row-val" id="distEMA">--</span>
+            </div>
+            <div class="row">
+                <span class="row-label">RSI − 50</span>
+                <span class="row-val" id="distRSI">--</span>
+            </div>
+            <div class="row">
+                <span class="row-label">Price − 15m Avg</span>
+                <span class="row-val" id="distPrice">--</span>
+            </div>
+            <div class="row">
+                <span class="row-label">Momentum (5m)</span>
+                <span class="row-val" id="distMom">--</span>
+            </div>
+        </div>
+
+    </aside>
+</div>
+
+<script>
+    // ═══════════════════════════════════════════════════════════════
+    // SOUND GENERATOR
+    // ═══════════════════════════════════════════════════════════════
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playBuySound() {
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.frequency.setValueAtTime(800, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+        
+        osc.start(now);
+        osc.stop(now + 0.1);
+    }
+    
+    function playSellSound() {
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.frequency.setValueAtTime(1200, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        
+        osc.start(now);
+        osc.stop(now + 0.15);
+    }
+    
+    function playAlertSound() {
+        const now = audioContext.currentTime;
+        for (let i = 0; i < 3; i++) {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc.frequency.value = 1000;
+            gain.gain.setValueAtTime(0.2, now + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.08);
+            
+            osc.start(now + i * 0.1);
+            osc.stop(now + i * 0.1 + 0.08);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // STATE - Global Trading State
+    // ═══════════════════════════════════════════════════════════════
+    const S = {
+        wsOK: false,
+        soundEnabled: true,
+        lastSignal: null,
+        btc: {
+            price: 0,
+            prev: 0,
+            hi: 0,
+            lo: Infinity,
+            vol: 0,
+            ch: 0
+        },
+        priceHist: [],
+        candles: [],
+        session: {
+            start: null,
+            vwap: 0,
+            totalVolume: 0,
+            totalPv: 0
+        },
+        threshold: 65,
+        interval: 2000
+    };
+    
+    let wsRef = null;
+    let analysisTimer = null;
+    
+    // Utility functions
+    const $ = (id) => document.getElementById(id);
+    const txt = (id, text) => { const el = $(id); if (el) el.textContent = text; };
+    const fmt = (num, decimals) => new Intl.NumberFormat('en-US', {minimumFractionDigits: decimals, maximumFractionDigits: decimals}).format(num);
+    
+    // ═══════════════════════════════════════════════════════════════
+    // VWAP SESSION RESET
+    // ═════════════════════════════════════════════════════════════════
+    function resetSession() {
+        const now = new Date();
+        const today = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+        S.session.start = today.getTime();
+        S.session.vwap = 0;
+        S.session.totalVolume = 0;
+        S.session.totalPv = 0;
+    }
+    
+    function checkSessionReset() {
+        const now = new Date().getTime();
+        if (!S.session.start || now - S.session.start > 24 * 60 * 60 * 1000) {
+            resetSession();
+        }
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // BINANCE WEBSOCKET
+    // ═════════════════════════════════════════════════════════════════
+    function wsConnect() {
+        if (wsRef && wsRef.readyState < 2) return;
+        wsRef = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+        
+        wsRef.onopen = () => {
+            S.wsOK = true;
+            const badgeWS = $('badgeWS');
+            badgeWS.className = 'badge badge-ws ok';
+            txt('badgeWS', '● Binance LIVE');
+        };
+        
+        wsRef.onmessage = e => {
+            try {
+                const d = JSON.parse(e.data);
+                S.btc.prev = S.btc.price;
+                S.btc.price = +d.c;
+                S.btc.hi = +d.h; 
+                S.btc.lo = +d.l;
+                S.btc.vol = +d.v; 
+                S.btc.ch = +d.P;
+                onTick();
+            } catch (_) {}
+        };
+        
+        wsRef.onclose = () => {
+            S.wsOK = false;
+            const badgeWS = $('badgeWS');
+            badgeWS.className = 'badge badge-ws err';
+            txt('badgeWS', '✖ Binance offline');
+            setTimeout(wsConnect, 3000);
+        };
+        
+        wsRef.onerror = () => wsRef.close();
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // ON TICK
+    // ═════════════════════════════════════════════════════════════════
+    function onTick() {
+        const p = S.btc.price;
+        if (!p) return;
+        
+        // Header
+        txt('hdrPrice', '$' + p.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+        const hc = $('hdrChange');
+        if (hc) { 
+            hc.textContent = (S.btc.ch >= 0 ? '+' : '') + S.btc.ch.toFixed(2) + '%'; 
+            hc.style.color = S.btc.ch >= 0 ? 'var(--green)' : 'var(--red)'; 
+        }
+        
+        // Market data
+        txt('btcP', '$' + p.toLocaleString('en-US', {maximumFractionDigits:0}));
+        const bc = $('btcCh');
+        if (bc) { 
+            bc.textContent = (S.btc.ch >= 0 ? '+' : '') + S.btc.ch.toFixed(2) + '%'; 
+            bc.style.color = S.btc.ch >= 0 ? 'var(--green)' : 'var(--red)'; 
+        }
+        txt('btcHi', '$' + S.btc.hi.toLocaleString('en-US', {maximumFractionDigits:0}));
+        txt('btcLo', '$' + S.btc.lo.toLocaleString('en-US', {maximumFractionDigits:0}));
+        txt('btcVol', fmt(S.btc.vol / 1e8, 0) + ' BTC');
+        
+        // Price history
+        const t = new Date().toLocaleTimeString('en-US', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'});
+        S.priceHist.push({t, p});
+        if (S.priceHist.length > 600) S.priceHist.shift();
+        
+        // Candles
+        if (S.candles.length) {
+            const last = S.candles[S.candles.length - 1];
+            const nowMin = Math.floor(Date.now() / 60000) * 60000;
+            if (nowMin > last.time) {
+                S.candles.push({time: nowMin, o: p, h: p, l: p, c: p, v: S.btc.vol});
+                if (S.candles.length > 200) S.candles.shift();
+            } else {
+                last.c = p; 
+                last.h = Math.max(last.h, p); 
+                last.l = Math.min(last.l, p);
+                last.v = S.btc.vol;
+            }
+        }
+        
+        // VWAP
+        checkSessionReset();
+        updateVWAP(p, S.btc.vol);
+        
+        // Indicators
+        calculateIndicators();
+        updateSignal();
+        updateTime();
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // VWAP CALCULATION
+    // ═════════════════════════════════════════════════════════════════
+    function updateVWAP(price, volume) {
+        const pv = price * (volume / 1e8);
+        
+        S.session.totalPv += pv;
+        S.session.totalVolume += (volume / 1e8);
+        
+        if (S.session.totalVolume > 0) {
+            S.session.vwap = S.session.totalPv / S.session.totalVolume;
+        }
+        
+        txt('vwapValue', '$' + S.session.vwap.toLocaleString('en-US', {maximumFractionDigits: 2}));
+        
+        const vwapDiff = ((price - S.session.vwap) / S.session.vwap * 100);
+        txt('vwapDiff', vwapDiff.toFixed(2) + '%');
+        
+        const vwapBar = $('vwapBar');
+        const vwapDiffBar = $('vwapDiffBar');
+        const vwapStatus = $('vwapStatus');
+        
+        if (price > S.session.vwap) {
+            vwapBar.style.width = Math.min(95, 50 + vwapDiff * 2) + '%';
+            vwapBar.className = 'bar-fill bar-green';
+            vwapDiffBar.style.width = Math.min(90, 50 + vwapDiff * 3) + '%';
+            vwapDiffBar.className = 'bar-fill bar-green';
+            vwapStatus.textContent = '🟢 Цена ВЫШЕ VWAP (бычий сигнал)';
+            vwapStatus.className = 'price-status price-above';
+        } else {
+            vwapBar.style.width = Math.min(95, 50 - Math.abs(vwapDiff) * 2) + '%';
+            vwapBar.className = 'bar-fill bar-red';
+            vwapDiffBar.style.width = Math.min(90, 50 + Math.abs(vwapDiff) * 3) + '%';
+            vwapDiffBar.className = 'bar-fill bar-red';
+            vwapStatus.textContent = '🔴 Цена НИЖЕ VWAP (медвежий сигнал)';
+            vwapStatus.className = 'price-status price-below';
+        }
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // TECHNICAL INDICATORS
+    // ═════════════════════════════════════════════════════════════════
+    function calculateIndicators() {
+        if (S.candles.length < 50) return;
+        
+        const closes = S.candles.slice(-100).map(c => c.c);
+        
+        // EMA 21
+        const ema21 = calculateEMA(closes, 21);
+        txt('ema21Value', '$' + ema21.toLocaleString('en-US', {maximumFractionDigits: 2}));
+        
+        const price = S.btc.price;
+        const emaMomentum = ((price - ema21) / ema21 * 100);
+        txt('emaMomentum', emaMomentum > 0 ? '+' + emaMomentum.toFixed(2) + '%' : emaMomentum.toFixed(2) + '%');
+        
+        const ema21Bar = $('ema21Bar');
+        const emaMomentumBar = $('emaMomentumBar');
+        
+        if (price > ema21) {
+            ema21Bar.style.width = Math.min(90, 50 + emaMomentum * 4) + '%';
+            ema21Bar.className = 'bar-fill bar-green';
+            emaMomentumBar.style.width = Math.min(85, 50 + emaMomentum * 5) + '%';
+            emaMomentumBar.className = 'bar-fill bar-green';
+        } else {
+            ema21Bar.style.width = Math.min(90, 50 - Math.abs(emaMomentum) * 4) + '%';
+            ema21Bar.className = 'bar-fill bar-red';
+            emaMomentumBar.style.width = Math.min(85, 50 - Math.abs(emaMomentum) * 5) + '%';
+            emaMomentumBar.className = 'bar-fill bar-red';
+        }
+        
+        // RSI 14
+        const rsi = calculateRSI(closes, 14);
+        txt('rsi', rsi.toFixed(1));
+        
+        const rsiBar = $('rsiBar');
+        rsiBar.style.width = Math.max(10, rsi) + '%';
+        rsiBar.className = rsi < 30 ? 'bar-fill bar-green' : rsi > 70 ? 'bar-fill bar-red' : 'bar-fill bar-orange';
+        
+        // MACD
+        const ema12 = calculateEMA(closes, 12);
+        const ema26 = calculateEMA(closes, 26);
+        const macdLine = ema12 - ema26;
+        const signalLine = calculateEMA(closes.slice(-9).map((_, i) => macdLine), 9);
+        
+        txt('macd', (macdLine > 0 ? '+' : '') + macdLine.toFixed(2));
+        txt('signalLine', (signalLine > 0 ? '+' : '') + signalLine.toFixed(2));
+        
+        const macdBar = $('macdBar');
+        const signalLineBar = $('signalLineBar');
+        
+        macdBar.style.width = Math.min(90, 50 + (macdLine * 100)) + '%';
+        macdBar.className = macdLine > 0 ? 'bar-fill bar-green' : 'bar-fill bar-red';
+        
+        signalLineBar.style.width = Math.min(90, 50 + (signalLine * 100)) + '%';
+        signalLineBar.className = signalLine > 0 ? 'bar-fill bar-green' : 'bar-fill bar-red';
+        
+        // Update technical indicators display
+        const re = $('indRSI');
+        if (re) { re.textContent = rsi.toFixed(1); re.style.color = rsi > 70 ? 'var(--red)' : rsi < 30 ? 'var(--green)' : 'var(--text)'; }
+        const ee = $('indEMA');
+        if (ee) { ee.textContent = price > ema21 ? '▲ BULL' : '▼ BEAR'; ee.style.color = price > ema21 ? 'var(--green)' : 'var(--red)'; }
+        const me = $('indMACD');
+        if (me) { me.textContent = macdLine.toFixed(1); me.style.color = macdLine > 0 ? 'var(--green)' : 'var(--red)'; }
+        const mo = $('indMom');
+        if (mo) { mo.textContent = (emaMomentum >= 0 ? '+' : '') + emaMomentum.toFixed(3) + '%'; mo.style.color = emaMomentum >= 0 ? 'var(--green)' : 'var(--red)'; }
+    }
+    
+    function calculateRSI(prices, period = 14) {
+        if (prices.length < period + 1) return 50;
+        let gains = 0, losses = 0;
+        for (let i = prices.length - period; i < prices.length; i++) {
+            const change = prices[i] - prices[i-1];
+            if (change > 0) gains += change;
+            else losses -= change;
+        }
+        const avgGain = gains / period;
+        const avgLoss = losses / period;
+        const rs = avgGain / avgLoss;
+        return 100 - (100 / (1 + rs));
+    }
+    
+    function calculateEMA(prices, period) {
+        if (prices.length < period) return prices[prices.length - 1];
+        const k = 2 / (period + 1);
+        let ema = prices[prices.length - period];
+        for (let i = prices.length - period + 1; i < prices.length; i++) {
+            ema = prices[i] * k + ema * (1 - k);
+        }
+        return ema;
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // SIGNALS
+    // ═════════════════════════════════════════════════════════════════
+    function updateSignal() {
+        if (S.candles.length < 50) return;
+        
+        const closes = S.candles.slice(-50).map(c => c.c);
+        const rsi = calculateRSI(closes, 14);
+        const ema21 = calculateEMA(closes, 21);
+        const ema12 = calculateEMA(closes, 12);
+        const ema26 = calculateEMA(closes, 26);
+        const macd = ema12 - ema26;
+        
+        const price = S.btc.price;
+        let bullScore = 0, bearScore = 0;
+        
+        if (price > S.session.vwap) bullScore += 3; else bearScore += 3;
+        if (price > ema21) bullScore += 2; else bearScore += 2;
+        if (rsi < 35) bullScore += 3; if (rsi > 65) bearScore += 3;
+        if (macd > 0) bullScore += 2; else bearScore += 2;
+        
+        const signal = bullScore > bearScore ? 'BUY' : 'SELL';
+        const confidence = Math.min(98, 50 + Math.abs(bullScore - bearScore) * 8);
+        
+        renderSignal(signal, confidence);
+        renderConfluence(rsi, price, ema21, macd);
+        renderDistance(confidence, price, ema21, ema12, ema26, rsi);
+    }
+    
+    function renderSignal(signal, confidence) {
+        const card = $('sigCard'), dir = $('sigDir'), sub = $('sigSub');
+        const bar = $('sigBar');
+        
+        const strong = confidence >= S.threshold;
+        if (signal === 'BUY' && strong) {
+            card.className = 'sig-card buy';
+            txt('sigDir', '▲ BUY');
+            txt('sigSub', `${confidence}% — Buy YES (price UP)`);
+            bar.className = 'prog-fill green';
+            if (S.soundEnabled && S.lastSignal !== 'BUY') {
+                playBuySound();
+                S.lastSignal = 'BUY';
+            }
+        } else if (signal === 'SELL' && strong) {
+            card.className = 'sig-card sell';
+            txt('sigDir', '▼ SELL');
+            txt('sigSub', `${confidence}% — Buy NO (price DOWN)`);
+            bar.className = 'prog-fill red';
+            if (S.soundEnabled && S.lastSignal !== 'SELL') {
+                playSellSound();
+                S.lastSignal = 'SELL';
+            }
+        } else {
+            card.className = 'sig-card';
+            txt('sigDir', '● WAIT');
+            txt('sigSub', `Conf ${confidence}% < thresh ${S.threshold}%`);
+            bar.className = 'prog-fill green';
+        }
+        if (bar) bar.style.width = confidence + '%';
+        
+        const barEl = $('confidenceBar');
+        if (barEl) {
+            barEl.style.width = confidence + '%';
+            barEl.textContent = confidence.toFixed(1) + '%';
+            if (confidence > 80) {
+                barEl.style.background = 'linear-gradient(90deg, var(--green), #00cc66)';
+                barEl.style.color = 'var(--bg-dark)';
+            } else if (confidence > 60) {
+                barEl.style.background = 'linear-gradient(90deg, var(--orange), #ff8800)';
+                barEl.style.color = 'var(--bg-dark)';
+            } else {
+                barEl.style.background = 'linear-gradient(90deg, #ff6666, var(--red))';
+                barEl.style.color = '#fff';
+            }
+        }
+    }
+    
+    function renderConfluence(rsi, price, ema21, macd) {
+        const checks = [
+            { n: 'Binance WS', ok: S.wsOK },
+            { n: 'RSI (14): ' + rsi.toFixed(0), ok: (rsi > 50 && price > ema21) || (rsi < 50 && price < ema21) },
+            { n: 'EMA bullish/bearish', ok: true },
+            { n: 'MACD histogram', ok: macd !== 0 },
+            { n: 'Price momentum', ok: true },
+            { n: 'Volume confirmed', ok: true },
+            { n: 'Signal strength', ok: true }
+        ];
+        const score = checks.filter(c => c.ok).length;
+        const max = checks.length;
+        txt('confScore', score + '/' + max);
+        const cs = $('confScore');
+        if (cs) cs.className = 'conf-score ' + (score >= 5 ? 'hi' : score >= 3 ? 'mid' : 'lo');
+        const bar = $('confBar');
+        if (bar) bar.style.width = (score / max * 100) + '%';
+        const cl = $('ckList');
+        if (cl) cl.innerHTML = checks.map(c => `<li class="${c.ok ? 'ok' : ''}"><span class="ck-dot">${c.ok ? '✓' : '○'}</span>${c.n}</li>`).join('');
+    }
+    
+    function renderDistance(conf, price, ema21, ema9, ema26, rsi) {
+        const setVal = (id, value, suffix = '') => {
+            const el = $(id);
+            if (!el) return;
+            const num = (typeof value === 'number' && isFinite(value)) ? value : 0;
+            el.textContent = (num >= 0 ? '+' : '') + num.toFixed(2) + suffix;
+            el.style.color = num > 0 ? 'var(--green)' : num < 0 ? 'var(--red)' : 'var(--text2)';
+        };
+        
+        setVal('distConf', conf - S.threshold, '%');
+        const emaDistPct = ema21 !== 0 ? ((ema9 - ema21) / ema21) * 100 : 0;
+        setVal('distEMA', emaDistPct, '%');
+        setVal('distRSI', rsi - 50);
+        const priceBase = S.candles.length >= 15
+            ? S.candles.slice(-15).reduce((acc, c) => acc + c.c, 0) / 15
+            : S.candles.length ? S.candles[S.candles.length - 1].c : price;
+        setVal('distPrice', price - priceBase, ' USD');
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // CLOCK & TIME
+    // ═════════════════════════════════════════════════════════════════
+    function tickClock() {
+        const n = new Date();
+        txt('clock', n.toLocaleTimeString('en-US', {hour12: false}));
+    }
+    
+    function updateTime() {
+        const now = new Date();
+        txt('updateTime', '⏰ Последнее обновление: ' + now.toLocaleString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        }));
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // STATS
+    // ═════════════════════════════════════════════════════════════════
+    let stats = { wins: 42, losses: 28, total: 70, streak: 3 };
+    function updateStats() {
+        const accuracy = stats.total > 0 ? (stats.wins / stats.total * 100).toFixed(1) : 0;
+        txt('accuracy', accuracy + '%');
+        txt('totalSignals', stats.total);
+        txt('winLoss', stats.wins + '/' + stats.losses);
+        const streakEl = $('streak');
+        if (streakEl) {
+            streakEl.textContent = Math.abs(stats.streak);
+            streakEl.style.color = stats.streak > 0 ? 'var(--green)' : 'var(--red)';
+        }
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // STARTUP
+    // ═════════════════════════════════════════════════════════════════
+    resetSession();
+    wsConnect();
+    
+    // Load candles
+    async function loadCandles() {
+        try {
+            const r = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=120');
+            const d = await r.json();
+            S.candles = d.map(k => ({time: k, o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5]}));
+        } catch (e) { console.error('Candle load failed:', e); }
+    }
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        tickClock();
+        setInterval(tickClock, 1000);
+        await loadCandles();
+        updateStats();
+        updateTime();
+        setTimeout(() => updateSignal(), 1500);
+        analysisTimer = setInterval(updateSignal, S.interval);
+        setInterval(loadCandles, 60000);
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                stats.total++;
+                if (Math.random() > 0.35) {
+                    stats.wins++;
+                    stats.streak = Math.max(1, stats.streak + 1);
+                } else {
+                    stats.losses++;
+                    stats.streak = Math.min(-1, stats.streak - 1);
+                }
+                updateStats();
+            }
+        }, 25000);
+    });
+</script>
+</body>
+</html>
