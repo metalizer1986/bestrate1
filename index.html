@@ -521,9 +521,41 @@
             padding: 10px;
             border-top: 1px solid var(--border);
         }
+        
+        /* ── NOTIFICATION ── */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-card);
+            border: 2px solid var(--green);
+            color: var(--green);
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .notification.sell {
+            border-color: var(--red);
+            color: var(--red);
+        }
     </style>
 </head>
 <body>
+
+<!-- Notification -->
+<div class="notification" id="notification"></div>
 
 <!-- Status badges -->
 <div class="badge badge-ws" id="badgeWS">⏳ Binance WS...</div>
@@ -689,9 +721,13 @@
         </div>
 
         <div class="card">
-            <div class="card-title">⚡ Уровень уверенности</div>
+            <div class="card-title">⚡ Уровень уверенности (Confluence Score)</div>
             <div class="confidence-bar">
                 <div id="confidenceBar" class="confidence-fill" style="width: 0%;">0%</div>
+            </div>
+            <div style="text-align: center; margin-top: 10px; font-size: 12px; color: var(--text2);">
+                Порог входа: <span style="color: var(--green); font-weight: bold;">65%</span> | 
+                Текущий счет: <span id="confDetail" style="color: #fff;">0</span>
             </div>
         </div>
 
@@ -801,6 +837,7 @@
         wsOK: false,
         soundEnabled: true,
         lastSignal: null,
+        lastAlertTime: 0, // Для защиты от спама уведомлений
         btc: {
             price: 0,
             prev: 0,
@@ -845,6 +882,35 @@
         const now = new Date().getTime();
         if (!S.session.start || now - S.session.start > 24 * 60 * 60 * 1000) {
             resetSession();
+        }
+    }
+    
+    // ═════════════════════════════════════════════════════════════════
+    // NOTIFICATION SYSTEM
+    // ═════════════════════════════════════════════════════════════════
+    function showNotification(signal, confidence) {
+        const now = Date.now();
+        // Защита от спама: не чаще 1 уведомления в 5 секунд
+        if (now - S.lastAlertTime < 5000) return;
+        S.lastAlertTime = now;
+        
+        const notif = $('notification');
+        if (!notif) return;
+        
+        if (signal === 'BUY') {
+            notif.className = 'notification';
+            notif.innerHTML = '🟢 <strong>BUY SIGNAL</strong><br>Confidence: ' + confidence.toFixed(1) + '%';
+        } else {
+            notif.className = 'notification sell';
+            notif.innerHTML = '🔴 <strong>SELL SIGNAL</strong><br>Confidence: ' + confidence.toFixed(1) + '%';
+        }
+        
+        setTimeout(() => notif.classList.add('show'), 10);
+        setTimeout(() => notif.classList.remove('show'), 5000);
+        
+        if (S.soundEnabled) {
+            if (signal === 'BUY') playBuySound();
+            else playSellSound();
         }
     }
     
@@ -1074,7 +1140,7 @@
     }
     
     // ═════════════════════════════════════════════════════════════════
-    // SIGNALS
+    // SIGNALS WITH CONFLUENCE SCORE (СУММА ИНДИКАТОРОВ)
     // ═════════════════════════════════════════════════════════════════
     function updateSignal() {
         if (S.candles.length < 50) return;
@@ -1082,96 +1148,192 @@
         const closes = S.candles.slice(-50).map(c => c.c);
         const rsi = calculateRSI(closes, 14);
         const ema21 = calculateEMA(closes, 21);
+        const ema9 = calculateEMA(closes, 9);
         const ema12 = calculateEMA(closes, 12);
         const ema26 = calculateEMA(closes, 26);
         const macd = ema12 - ema26;
         
         const price = S.btc.price;
-        let bullScore = 0, bearScore = 0;
         
-        if (price > S.session.vwap) bullScore += 3; else bearScore += 3;
-        if (price > ema21) bullScore += 2; else bearScore += 2;
-        if (rsi < 35) bullScore += 3; if (rsi > 65) bearScore += 3;
-        if (macd > 0) bullScore += 2; else bearScore += 2;
+        // Считаем среднюю цену за 15 минут для расстояния
+        const priceBase = S.candles.length >= 15
+            ? S.candles.slice(-15).reduce((acc, c) => acc + c.c, 0) / 15
+            : S.candles.length ? S.candles[S.candles.length - 1].c : price;
         
-        const signal = bullScore > bearScore ? 'BUY' : 'SELL';
-        const confidence = Math.min(98, 50 + Math.abs(bullScore - bearScore) * 8);
+        // ═══════════════════════════════════════════════════════════
+        // CONFLUENCE SCORE - СУММА ВСЕХ ИНДИКАТОРОВ
+        // Каждый индикатор дает от -3 до +3 баллов
+        // ═══════════════════════════════════════════════════════════
+        let confluenceScore = 0;
+        let details = [];
         
-        renderSignal(signal, confidence);
-        renderConfluence(rsi, price, ema21, macd);
-        renderDistance(confidence, price, ema21, ema12, ema26, rsi);
+        // 1. VWAP (3 балла)
+        if (price > S.session.vwap) {
+            confluenceScore += 3;
+            details.push({name: 'VWAP', value: +3, desc: 'Цена выше VWAP'});
+        } else if (price < S.session.vwap) {
+            confluenceScore -= 3;
+            details.push({name: 'VWAP', value: -3, desc: 'Цена ниже VWAP'});
+        }
+        
+        // 2. EMA 9/21 (2 балла)
+        if (ema9 > ema21) {
+            confluenceScore += 2;
+            details.push({name: 'EMA Cross', value: +2, desc: 'EMA9 выше EMA21'});
+        } else if (ema9 < ema21) {
+            confluenceScore -= 2;
+            details.push({name: 'EMA Cross', value: -2, desc: 'EMA9 ниже EMA21'});
+        }
+        
+        // 3. Цена относительно EMA21 (2 балла)
+        const emaDist = ((price - ema21) / ema21) * 100;
+        if (emaDist > 0.1) {
+            confluenceScore += 2;
+            details.push({name: 'Price vs EMA21', value: +2, desc: 'Цена выше EMA21'});
+        } else if (emaDist < -0.1) {
+            confluenceScore -= 2;
+            details.push({name: 'Price vs EMA21', value: -2, desc: 'Цена ниже EMA21'});
+        }
+        
+        // 4. RSI (2 балла) - экстремумы
+        if (rsi < 35) {
+            confluenceScore += 2;
+            details.push({name: 'RSI', value: +2, desc: 'RSI перекуплен <35'});
+        } else if (rsi > 65) {
+            confluenceScore -= 2;
+            details.push({name: 'RSI', value: -2, desc: 'RSI пере продан >65'});
+        } else {
+            details.push({name: 'RSI', value: 0, desc: 'RSI нейтральный'});
+        }
+        
+        // 5. MACD (2 балла)
+        if (macd > 0.1) {
+            confluenceScore += 2;
+            details.push({name: 'MACD', value: +2, desc: 'MACD положительный'});
+        } else if (macd < -0.1) {
+            confluenceScore -= 2;
+            details.push({name: 'MACD', value: -2, desc: 'MACD отрицательный'});
+        } else {
+            details.push({name: 'MACD', value: 0, desc: 'MACD нейтральный'});
+        }
+        
+        // 6. Momentum (1 балл)
+        const mom = ((price - priceBase) / priceBase) * 100;
+        if (mom > 0.05) {
+            confluenceScore += 1;
+            details.push({name: 'Momentum', value: +1, desc: 'Импульс вверх'});
+        } else if (mom < -0.05) {
+            confluenceScore -= 1;
+            details.push({name: 'Momentum', value: -1, desc: 'Импульс вниз'});
+        }
+        
+        // Нормализуем к 0-100%
+        let confidence = ((confluenceScore + 10) / 20) * 100;
+        confidence = Math.max(0, Math.min(100, confidence));
+        
+        // Определяем сигнал
+        const signal = confluenceScore > 0 ? 'BUY' : 'SELL';
+        const absScore = Math.abs(confluenceScore);
+        
+        renderSignal(signal, confidence, absScore);
+        renderConfluence(details, confidence);
+        renderDistance(confluenceScore, emaDist, rsi - 50, price - priceBase, mom);
     }
     
-    function renderSignal(signal, confidence) {
+    function renderSignal(signal, confidence, rawScore) {
         const card = $('sigCard'), dir = $('sigDir'), sub = $('sigSub');
         const bar = $('sigBar');
         
         const strong = confidence >= S.threshold;
+        
         if (signal === 'BUY' && strong) {
             card.className = 'sig-card buy';
             txt('sigDir', '▲ BUY');
-            txt('sigSub', `${confidence}% — Buy YES (price UP)`);
+            txt('sigSub', `Score: ${rawScore}/10 | Conf: ${confidence.toFixed(1)}% — ВХОД в сделку`);
             bar.className = 'prog-fill green';
-            if (S.soundEnabled && S.lastSignal !== 'BUY') {
-                playBuySound();
+            
+            // Показываем уведомление при переходе через порог
+            if (S.lastSignal !== 'BUY' && S.wsOK) {
+                showNotification('BUY', confidence);
                 S.lastSignal = 'BUY';
             }
         } else if (signal === 'SELL' && strong) {
             card.className = 'sig-card sell';
             txt('sigDir', '▼ SELL');
-            txt('sigSub', `${confidence}% — Buy NO (price DOWN)`);
+            txt('sigSub', `Score: ${rawScore}/10 | Conf: ${confidence.toFixed(1)}% — ВХОД в сделку`);
             bar.className = 'prog-fill red';
-            if (S.soundEnabled && S.lastSignal !== 'SELL') {
-                playSellSound();
+            
+            if (S.lastSignal !== 'SELL' && S.wsOK) {
+                showNotification('SELL', confidence);
                 S.lastSignal = 'SELL';
             }
         } else {
             card.className = 'sig-card';
             txt('sigDir', '● WAIT');
-            txt('sigSub', `Conf ${confidence}% < thresh ${S.threshold}%`);
+            txt('sigSub', `Score: ${rawScore}/10 | Conf: ${confidence.toFixed(1)}% — Ожидание (порог ${S.threshold}%)`);
             bar.className = 'prog-fill green';
+            
+            // Сбрасываем lastSignal когда не в зоне входа
+            if (Math.abs(rawScore) < 5) S.lastSignal = null;
         }
+        
         if (bar) bar.style.width = confidence + '%';
         
+        // Обновляем основной бар уверенности
         const barEl = $('confidenceBar');
         if (barEl) {
             barEl.style.width = confidence + '%';
-            barEl.textContent = confidence.toFixed(1) + '%';
-            if (confidence > 80) {
+            barEl.textContent = confidence.toFixed(1) + '% (' + rawScore + '/10)';
+            
+            // Цвет в зависимости от силы
+            if (confidence >= 80) {
                 barEl.style.background = 'linear-gradient(90deg, var(--green), #00cc66)';
                 barEl.style.color = 'var(--bg-dark)';
-            } else if (confidence > 60) {
+            } else if (confidence >= 65) {
                 barEl.style.background = 'linear-gradient(90deg, var(--orange), #ff8800)';
                 barEl.style.color = 'var(--bg-dark)';
+            } else if (confidence >= 50) {
+                barEl.style.background = 'linear-gradient(90deg, #ffaa00, var(--orange))';
+                barEl.style.color = '#000';
             } else {
                 barEl.style.background = 'linear-gradient(90deg, #ff6666, var(--red))';
                 barEl.style.color = '#fff';
             }
         }
+        
+        // Обновляем детали
+        txt('confDetail', rawScore + '/10');
     }
     
-    function renderConfluence(rsi, price, ema21, macd) {
-        const checks = [
-            { n: 'Binance WS', ok: S.wsOK },
-            { n: 'RSI (14): ' + rsi.toFixed(0), ok: (rsi > 50 && price > ema21) || (rsi < 50 && price < ema21) },
-            { n: 'EMA bullish/bearish', ok: true },
-            { n: 'MACD histogram', ok: macd !== 0 },
-            { n: 'Price momentum', ok: true },
-            { n: 'Volume confirmed', ok: true },
-            { n: 'Signal strength', ok: true }
-        ];
-        const score = checks.filter(c => c.ok).length;
-        const max = checks.length;
-        txt('confScore', score + '/' + max);
+    function renderConfluence(details, confidence) {
+        const checks = details.map(d => ({
+            n: d.desc,
+            ok: d.value > 0
+        }));
+        
+        const score = Math.round(confidence);
+        const max = 100;
+        
+        txt('confScore', score + '%');
         const cs = $('confScore');
-        if (cs) cs.className = 'conf-score ' + (score >= 5 ? 'hi' : score >= 3 ? 'mid' : 'lo');
+        if (cs) cs.className = 'conf-score ' + (score >= 80 ? 'hi' : score >= 65 ? 'mid' : 'lo');
+        
         const bar = $('confBar');
-        if (bar) bar.style.width = (score / max * 100) + '%';
+        if (bar) bar.style.width = confidence + '%';
+        
         const cl = $('ckList');
-        if (cl) cl.innerHTML = checks.map(c => `<li class="${c.ok ? 'ok' : ''}"><span class="ck-dot">${c.ok ? '✓' : '○'}</span>${c.n}</li>`).join('');
+        if (cl) cl.innerHTML = details.map(d => {
+            const color = d.value > 0 ? 'var(--green)' : d.value < 0 ? 'var(--red)' : 'var(--text2)';
+            return `<li class="${d.value > 0 ? 'ok' : ''}">
+                <span class="ck-dot" style="background:${d.value > 0 ? 'var(--green)' : d.value < 0 ? 'var(--red)' : 'var(--bg-dark)'}">
+                    ${d.value > 0 ? '+' : d.value < 0 ? '-' : '○'}
+                </span>
+                <span style="color:${color}">${d.name}: ${d.value > 0 ? '+' : ''}${d.value}</span>
+            </li>`;
+        }).join('');
     }
     
-    function renderDistance(conf, price, ema21, ema9, ema26, rsi) {
+    function renderDistance(score, emaDist, rsiDist, priceDist, mom) {
         const setVal = (id, value, suffix = '') => {
             const el = $(id);
             if (!el) return;
@@ -1180,14 +1342,11 @@
             el.style.color = num > 0 ? 'var(--green)' : num < 0 ? 'var(--red)' : 'var(--text2)';
         };
         
-        setVal('distConf', conf - S.threshold, '%');
-        const emaDistPct = ema21 !== 0 ? ((ema9 - ema21) / ema21) * 100 : 0;
-        setVal('distEMA', emaDistPct, '%');
-        setVal('distRSI', rsi - 50);
-        const priceBase = S.candles.length >= 15
-            ? S.candles.slice(-15).reduce((acc, c) => acc + c.c, 0) / 15
-            : S.candles.length ? S.candles[S.candles.length - 1].c : price;
-        setVal('distPrice', price - priceBase, ' USD');
+        setVal('distConf', score - S.threshold, '');
+        setVal('distEMA', emaDist, '%');
+        setVal('distRSI', rsiDist, '');
+        setVal('distPrice', priceDist, ' USD');
+        setVal('distMom', mom, '%');
     }
     
     // ═════════════════════════════════════════════════════════════════
@@ -1234,7 +1393,7 @@
         try {
             const r = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=120');
             const d = await r.json();
-            S.candles = d.map(k => ({time: k, o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5]}));
+            S.candles = d.map(k => ({time: k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5]}));
         } catch (e) { console.error('Candle load failed:', e); }
     }
     
