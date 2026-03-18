@@ -3,1082 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dacha.53 — A-frame дом с баней и купелью</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>BTC/USD 15min Trading Signals</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --black: #0a0a0a;
-            --white: #ffffff;
-            --gray-100: #f5f5f5;
-            --gray-200: #e5e5e5;
-            --gray-600: #525252;
-            --gray-900: #171717;
-            --accent: #dc2626;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        
         body {
-            font-family: 'Inter', sans-serif;
-            color: var(--black);
-            line-height: 1.6;
-            background: var(--white);
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 1.5rem 4%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        nav.scrolled {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            padding: 1rem 4%;
-            box-shadow: 0 1px 0 var(--gray-200);
-        }
-
-        .logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--white);
-            text-decoration: none;
-            letter-spacing: -0.05em;
-        }
-
-        nav.scrolled .logo {
-            color: var(--black);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--white);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: opacity 0.3s;
-            position: relative;
-        }
-
-        nav.scrolled .nav-links a {
-            color: var(--black);
-        }
-
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-
-        /* Hero */
-        .hero {
-            height: 100vh;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            padding: 4rem;
-            overflow: hidden;
-        }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-        }
-
-        .hero-bg img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
-
-        .hero-content {
-            max-width: 700px;
-            color: var(--white);
-        }
-
-        .hero-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-tag::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: #22c55e;
-            border-radius: 50%;
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 6vw, 5rem);
-            line-height: 1;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-desc {
-            font-size: 1.125rem;
-            opacity: 0.9;
-            max-width: 500px;
-            margin-bottom: 2.5rem;
-            font-weight: 300;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.7;
-        }
-
-        .hero-phone {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: var(--white);
-            color: var(--black);
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 100px;
-            transition: all 0.3s;
-        }
-
-        .hero-phone:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        /* Sections */
-        section {
-            padding: 8rem 4%;
-        }
-
-        .section-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            margin-bottom: 4rem;
-            align-items: end;
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--gray-600);
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            line-height: 1.1;
-        }
-
-        .section-desc {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            max-width: 500px;
-        }
-
-        /* About */
-        .about {
-            background: var(--gray-100);
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-visual {
-            position: relative;
-        }
-
-        .about-img-main {
-            width: 100%;
-            height: 600px;
-            object-fit: cover;
-            border-radius: 1rem;
-        }
-
-        .about-img-small {
-            position: absolute;
-            bottom: -2rem;
-            right: -2rem;
-            width: 300px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 0.75rem;
-            border: 4px solid var(--white);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        .about-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .about-text {
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-            font-size: 1.0625rem;
-            line-height: 1.8;
-        }
-
-        .features-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .feature-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--white);
-            border-radius: 0.75rem;
-            transition: transform 0.3s;
-        }
-
-        .feature-row:hover {
-            transform: translateX(10px);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--black);
-            color: var(--white);
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        /* Gallery */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-auto-rows: 300px;
-            gap: 1rem;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.75rem;
-            cursor: pointer;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .gallery-item.large {
-            grid-column: span 2;
-            grid-row: span 2;
-        }
-
-        .gallery-item.wide {
-            grid-column: span 2;
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 1.5rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        .gallery-overlay h4 {
-            color: var(--white);
-            font-size: 1.125rem;
-        }
-
-        /* Amenities */
-        .amenities {
-            background: var(--black);
-            color: var(--white);
-        }
-
-        .amenities .section-label {
-            color: rgba(255,255,255,0.5);
-        }
-
-        .amenities .section-title {
-            color: var(--white);
-        }
-
-        .amenities-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-
-        .amenity-card {
-            background: var(--black);
-            padding: 3rem 2rem;
-            text-align: center;
-            transition: background 0.3s;
-        }
-
-        .amenity-card:hover {
-            background: rgba(255,255,255,0.05);
-        }
-
-        .amenity-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 1.5rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-        }
-
-        .amenity-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .amenity-card p {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.9375rem;
-            line-height: 1.6;
-        }
-
-        /* Pricing */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-
-        .pricing-card {
-            padding: 2.5rem;
-            border: 1px solid var(--gray-200);
-            border-radius: 1rem;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .pricing-card:hover {
-            border-color: var(--black);
-            transform: translateY(-5px);
-        }
-
-        .pricing-card.popular {
-            background: var(--black);
-            color: var(--white);
-            border-color: var(--black);
-        }
-
-        .pricing-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.5rem 1rem;
-            background: var(--accent);
-            color: var(--white);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-radius: 100px;
-        }
-
-        .pricing-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .pricing-period {
-            color: var(--gray-600);
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .pricing-card.popular .pricing-period {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .price {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .price-currency {
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
-
-        .price-note {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-        }
-
-        .pricing-card.popular .price-note {
-            color: rgba(255,255,255,0.6);
-        }
-
-        .pricing-features {
-            list-style: none;
-        }
-
-        .pricing-features li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--gray-200);
-            font-size: 0.9375rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .pricing-card.popular .pricing-features li {
-            border-bottom-color: rgba(255,255,255,0.1);
-        }
-
-        .pricing-features li::before {
-            content: '—';
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        .pricing-card.popular .pricing-features li::before {
-            color: var(--white);
-        }
-
-        /* Contact */
-        .contact {
-            background: var(--gray-100);
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            max-width: 800px;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e3e 100%);
+            color: #00ff88;
+            padding: min(20px, 3vw);
+            min-height: 100vh;
+            font-size: clamp(10px, 1.5vw, 14px);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
         }
-
-        .contact-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+        
+        .header {
+            text-align: center;
+            margin-bottom: min(30px, 4vw);
+            padding: min(15px, 2vw);
+            background: rgba(0, 255, 136, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
-
-        .contact-info > p {
-            color: var(--gray-600);
-            margin-bottom: 2rem;
+        
+        h1 {
+            font-size: clamp(18px, 3vw, 28px);
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            margin-bottom: 10px;
         }
-
-        .contact-methods {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        
+        .signal-display {
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: bold;
+            padding: min(20px, 3vw);
+            border-radius: 15px;
+            margin: min(20px, 3vw) 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
         }
-
-        .contact-method {
+        
+        .signal-up {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #0a0e27;
+        }
+        
+        .signal-down {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            color: #fff;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: min(20px, 3vw);
+            margin-bottom: min(20px, 3vw);
+        }
+        
+        .card {
+            background: rgba(26, 30, 62, 0.8);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: min(15px, 2vw);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-title {
+            font-size: clamp(14px, 2vw, 18px);
+            color: #00ff88;
+            margin-bottom: min(15px, 2vw);
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: var(--white);
-            border-radius: 1rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s;
+            gap: 8px;
         }
-
-        .contact-method:hover {
-            transform: translateX(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: min(8px, 1.5vw) 0;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            flex-wrap: wrap;
+            gap: 5px;
         }
-
-        .contact-icon-box {
-            width: 56px;
-            height: 56px;
-            background: var(--black);
-            color: var(--white);
-            border-radius: 0.75rem;
+        
+        .info-label {
+            color: #7aa3ff;
+            font-size: clamp(11px, 1.5vw, 13px);
+        }
+        
+        .info-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: clamp(11px, 1.5vw, 13px);
+        }
+        
+        .positive {
+            color: #00ff88;
+        }
+        
+        .negative {
+            color: #ff4444;
+        }
+        
+        .neutral {
+            color: #ffaa00;
+        }
+        
+        .indicator-list {
+            list-style: none;
+        }
+        
+        .indicator-item {
+            padding: min(6px, 1vw) 0;
+            font-size: clamp(11px, 1.5vw, 13px);
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: min(30px, 5vw);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            transition: width 1s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-weight: bold;
+            font-size: clamp(12px, 1.8vw, 16px);
         }
-
-        .contact-method div strong {
-            display: block;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--gray-600);
-            margin-bottom: 0.25rem;
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
+            gap: min(10px, 2vw);
         }
-
-        .contact-method div span {
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        /* Footer */
-        footer {
-            padding: 3rem 4%;
+        
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: min(10px, 2vw);
+            border-radius: 8px;
             text-align: center;
-            border-top: 1px solid var(--gray-200);
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
-
-        .footer-logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+        
+        .stat-label {
+            font-size: clamp(10px, 1.3vw, 11px);
+            color: #7aa3ff;
+            margin-bottom: 5px;
         }
-
-        .footer-copy {
-            color: var(--gray-600);
-            font-size: 0.875rem;
+        
+        .stat-value {
+            font-size: clamp(14px, 2vw, 18px);
+            font-weight: bold;
         }
-
-        /* Mobile */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            z-index: 1001;
+        
+        .update-time {
+            text-align: center;
+            color: #7aa3ff;
+            margin-top: min(20px, 3vw);
+            font-size: clamp(11px, 1.5vw, 13px);
         }
-
-        .menu-toggle span {
-            width: 24px;
-            height: 2px;
-            background: var(--white);
-            transition: 0.3s;
-        }
-
-        nav.scrolled .menu-toggle span {
-            background: var(--black);
-        }
-
-        @media (max-width: 968px) {
-            .section-header {
+        
+        @media (max-width: 768px) {
+            .grid {
                 grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-img-small {
-                display: none;
-            }
-
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .gallery-item.large {
-                grid-column: span 2;
-                grid-row: span 1;
-            }
-
-            .amenities-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .hero {
-                padding: 2rem;
-                align-items: center;
-                text-align: center;
-            }
-
-            .hero-stats {
-                justify-content: center;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 80%;
-                height: 100vh;
-                background: var(--white);
-                flex-direction: column;
-                padding: 6rem 2rem;
-                transition: 0.3s;
-            }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .nav-links a {
-                color: var(--black);
-                font-size: 1.25rem;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .gallery-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery-item.large,
-            .gallery-item.wide {
-                grid-column: span 1;
-            }
-
-            .amenities-grid {
-                grid-template-columns: 1fr;
-            }
-
-            section {
-                padding: 4rem 4%;
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- Navigation -->
-    <nav id="navbar">
-        <a href="#" class="logo">Dacha.53</a>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#about">О доме</a></li>
-            <li><a href="#gallery">Фото</a></li>
-            <li><a href="#amenities">Удобства</a></li>
-            <li><a href="#pricing">Цены</a></li>
-            <li><a href="#contact">Контакты</a></li>
-        </ul>
-        <div class="menu-toggle" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+    <div class="container">
+        <div class="header">
+            <h1>📊 BTC/USD Trading Signals</h1>
+            <div style="color: #7aa3ff; font-size: clamp(12px, 1.8vw, 14px);">15-минутные трейды • Автоматический анализ</div>
         </div>
-    </nav>
-
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-bg">
-            <img src="https://kimi-web-img.moonshot.cn/img/opis-cdn.tinkoffjournal.ru/ec34f0af103d4f3029ec1240934072826e957967.jpg" alt="A-frame дом Dacha.53">
+        
+        <div id="signalDisplay" class="signal-display">
+            🔄 Анализ...
         </div>
-        <div class="hero-content">
-            <div class="hero-tag">Доступен для бронирования</div>
-            <h1>A-frame дом с купелью и баней</h1>
-            <p class="hero-desc">Уникальный треугольный дом в скандинавском стиле. Собственная баня, купель с горячей водой и панорамные окна с видом на лес.</p>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="card-title">💹 Рыночные данные</div>
+                <div class="info-row">
+                    <span class="info-label">Текущая цена:</span>
+                    <span class="info-value" id="currentPrice">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Изменение (15m):</span>
+                    <span class="info-value" id="priceChange">0%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Объем (24ч):</span>
+                    <span class="info-value" id="volume24h">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">High / Low (15m):</span>
+                    <span class="info-value" id="highLow">$0 / $0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">RSI (14):</span>
+                    <span class="info-value" id="rsi">50</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">MACD:</span>
+                    <span class="info-value" id="macd">0</span>
+                </div>
+            </div>
             
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-value">65</span>
-                    <span class="stat-label">м² площадь</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">4</span>
-                    <span class="stat-label">гостя</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">2</span>
-                    <span class="stat-label">спальни</span>
-                </div>
-            </div>
-
-            <a href="tel:+375291234567" class="hero-phone">
-                <span>📞</span>
-                <span>+375 (29) 123-45-67</span>
-            </a>
-        </div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="about">
-        <div class="section-header">
-            <div>
-                <div class="section-label">О доме</div>
-                <h2 class="section-title">Архитектура в гармонии с природой</h2>
-            </div>
-            <p class="section-desc">A-frame — это не просто дом, это форма единения с природой. Высокие потолки, естественное освещение и деревянные конструкции создают особенную атмосферу.</p>
-        </div>
-
-        <div class="about-grid">
-            <div class="about-visual">
-                <img src="https://kimi-web-img.moonshot.cn/img/banidom.ru/a53b3cf358915da8b63bec44e2388e1b4a35438e.jpg" alt="Интерьер A-frame дома" class="about-img-main">
-                <img src="https://kimi-web-img.moonshot.cn/img/www.domino.com/0cfde07cd43166befe887b01661f46812f01a1ec.jpg" alt="Спальня на антресоли" class="about-img-small">
-            </div>
-            <div class="about-content">
-                <h3>Всё для комфортного отдыха</h3>
-                <p class="about-text">Дом построен по классической A-frame технологии с современными доработками. Панорамное остекление фронтона открывает вид на сосновый лес, а треугольная крыша создаёт уникальное пространство второго света.</p>
-                
-                <div class="features-list">
-                    <div class="feature-row">
-                        <div class="feature-icon">🔥</div>
-                        <div>
-                            <strong>Купель с подогревом</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Работает круглый год, до 40°C</p>
-                        </div>
-                    </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🧖</div>
-                        <div>
-                            <strong>Русская баня</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Парилка на дровах с вениками</p>
-                        </div>
-                    </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🌲</div>
-                        <div>
-                            <strong>Панорамный вид</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Окна от пола до потолка</p>
-                        </div>
-                    </div>
-                    <div class="feature-row">
-                        <div class="feature-icon">🚗</div>
-                        <div>
-                            <strong>Закрытая территория</strong>
-                            <p style="color: var(--gray-600); font-size: 0.875rem;">Парковка и беседка с мангалом</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery -->
-    <section id="gallery">
-        <div class="section-header">
-            <div>
-                <div class="section-label">Галерея</div>
-                <h2 class="section-title">Загляните внутрь</h2>
-            </div>
-            <p class="section-desc">Интерьер и экстерьер нашего A-frame дома в разное время суток и года.</p>
-        </div>
-
-        <div class="gallery-grid">
-            <div class="gallery-item large">
-                <img src="https://kimi-web-img.moonshot.cn/img/media.vrbo.com/1f592e845d20a269ca0586d80ad8cc4768e53334.jpg" alt="A-frame дом с купелью">
-                <div class="gallery-overlay">
-                    <h4>Терраса с купелью</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/coolstays.imgix.net/0a82f3b87945b0e028af8d87dea26afa4722913b.jpg" alt="Вечерний вид">
-                <div class="gallery-overlay">
-                    <h4>Вечерняя подсветка</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/www.domino.com/dcfce0a7a750aac38ec6906c92790bf53af627f8.jpg" alt="Гостиная">
-                <div class="gallery-overlay">
-                    <h4>Гостиная</h4>
-                </div>
-            </div>
-            <div class="gallery-item wide">
-                <img src="https://kimi-web-img.moonshot.cn/img/davisframe.com/a8861f6d7ceda0b58f2b272883481a6b4a15266c.jpg" alt="Камин">
-                <div class="gallery-overlay">
-                    <h4>Зона у камина</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/cdn.apartmenttherapy.info/43074672483a5f4735ea92a653e9c8bfae59620c" alt="Ванная">
-                <div class="gallery-overlay">
-                    <h4>Ванная комната</h4>
-                </div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://kimi-web-img.moonshot.cn/img/cdn.skargards.com/db8db217f4f919f019d62298e20531ef1ab4bcbd.jpg" alt="Купель">
-                <div class="gallery-overlay">
-                    <h4>Купель</h4>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Amenities -->
-    <section id="amenities" class="amenities">
-        <div class="section-header">
-            <div>
-                <div class="section-label">Удобства</div>
-                <h2 class="section-title">Всё включено</h2>
-            </div>
-            <p class="section-desc" style="color: rgba(255,255,255,0.6);">Полный комплект для комфортного отдыха без лишних забот.</p>
-        </div>
-
-        <div class="amenities-grid">
-            <div class="amenity-card">
-                <div class="amenity-icon">🛁</div>
-                <h3>Горячая купель</h3>
-                <p>Деревянный чан с подогревом до 40°C. Работает круглый год.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🧖‍♂️</div>
-                <h3>Баня на дровах</h3>
-                <p>Традиционная русская парилка с вениками и эфирными маслами.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🪟</div>
-                <h3>Панорамные окна</h3>
-                <p>Фронтальное остекление с видом на сосновый бор.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🍳</div>
-                <h3>Кухня</h3>
-                <p>Вся посуда, холодильник, плита, чайник и кофемашина.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🛏️</div>
-                <h3>2 спальни</h3>
-                <p>Двуспальная кровать на антресоли и раскладной диван.</p>
-            </div>
-            <div class="amenity-card">
-                <div class="amenity-icon">🔥</div>
-                <h3>Камин</h3>
-                <p>Живой огонь для уютных вечеров. Дрова включены.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing -->
-    <section id="pricing">
-        <div class="section-header">
-            <div>
-                <div class="section-label">Тарифы</div>
-                <h2 class="section-title">Стоимость аренды</h2>
-            </div>
-            <p class="section-desc">Прозрачные цены без скрытых платежей. Все удобства включены.</p>
-        </div>
-
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <h3>Будни</h3>
-                <p class="pricing-period">Понедельник — Четверг</p>
-                <div class="price"><span class="price-currency">Br</span> 250</div>
-                <p class="price-note">за сутки</p>
-                <ul class="pricing-features">
-                    <li>До 4 гостей</li>
-                    <li>Баня и купель</li>
-                    <li>Постельное бельё</li>
-                    <li>Парковка</li>
+            <div class="card">
+                <div class="card-title">🎯 Технические индикаторы</div>
+                <ul class="indicator-list">
+                    <li class="indicator-item">• <strong>EMA (50):</strong> <span id="ema50">Нейтрально</span></li>
+                    <li class="indicator-item">• <strong>Bollinger Bands:</strong> <span id="bb">Средняя зона</span></li>
+                    <li class="indicator-item">• <strong>Stochastic:</strong> <span id="stoch">50%</span></li>
+                    <li class="indicator-item">• <strong>ATR:</strong> <span id="atr">Средняя волатильность</span></li>
+                    <li class="indicator-item">• <strong>Volume Trend:</strong> <span id="volTrend">Стабильный</span></li>
+                    <li class="indicator-item">• <strong>Trend Strength:</strong> <span id="trendStrength">Умеренный</span></li>
                 </ul>
             </div>
-
-            <div class="pricing-card popular">
-                <span class="pricing-badge">Популярное</span>
-                <h3>Выходные</h3>
-                <p class="pricing-period">Пятница — Воскресенье</p>
-                <div class="price"><span class="price-currency">Br</span> 350</div>
-                <p class="price-note">за сутки</p>
-                <ul class="pricing-features">
-                    <li>До 4 гостей</li>
-                    <li>Баня и купель</li>
-                    <li>Постельное бельё</li>
-                    <li>Парковка</li>
-                    <li>Дрова для мангала</li>
-                </ul>
-            </div>
-
-            <div class="pricing-card">
-                <h3>Неделя</h3>
-                <p class="pricing-period">7 дней со скидкой</p>
-                <div class="price"><span class="price-currency">Br</span> 1500</div>
-                <p class="price-note">за неделю</p>
-                <ul class="pricing-features">
-                    <li>До 4 гостей</li>
-                    <li>Безлимитная баня</li>
-                    <li>Средняя уборка</li>
-                    <li>Постельное бельё</li>
-                    <li>Парковка</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="contact">
-        <div class="section-header" style="text-align: center; display: block;">
-            <div class="section-label">Контакты</div>
-            <h2 class="section-title">Свяжитесь с нами</h2>
-            <p class="section-desc" style="margin: 1rem auto 0;">Выберите удобный способ связи.</p>
-        </div>
-
-        <div class="contact-grid">
-            <div class="contact-info">
-                <div class="contact-methods">
-                    <a href="tel:+375291234567" class="contact-method">
-                        <div class="contact-icon-box">📞</div>
-                        <div>
-                            <strong>Телефон</strong>
-                            <span>+375 (29) 123-45-67</span>
-                        </div>
-                    </a>
-                    
-                    <a href="https://t.me/dacha53" target="_blank" class="contact-method">
-                        <div class="contact-icon-box">✈️</div>
-                        <div>
-                            <strong>Telegram</strong>
-                            <span>@dacha53</span>
-                        </div>
-                    </a>
+            
+            <div class="card">
+                <div class="card-title">📈 Уровни поддержки/сопротивления</div>
+                <div class="info-row">
+                    <span class="info-label">Сопротивление 1:</span>
+                    <span class="info-value positive" id="resistance1">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Текущая цена:</span>
+                    <span class="info-value neutral" id="currentPrice2">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Поддержка 1:</span>
+                    <span class="info-value negative" id="support1">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Stop Loss (рек.):</span>
+                    <span class="info-value" id="stopLoss">$0</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Take Profit (рек.):</span>
+                    <span class="info-value" id="takeProfit">$0</span>
                 </div>
             </div>
-
-            <div class="contact-info">
-                <div class="contact-methods">
-                    <a href="https://instagram.com/dacha.53" target="_blank" class="contact-method">
-                        <div class="contact-icon-box">📷</div>
-                        <div>
-                            <strong>Instagram</strong>
-                            <span>@dacha.53</span>
-                        </div>
-                    </a>
-                    
-                    <a href="mailto:info@dacha53.by" class="contact-method">
-                        <div class="contact-icon-box">✉️</div>
-                        <div>
-                            <strong>Email</strong>
-                            <span>info@dacha53.by</span>
-                        </div>
-                    </a>
+            
+            <div class="card">
+                <div class="card-title">📊 Статистика торговли</div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Точность (24ч)</div>
+                        <div class="stat-value positive" id="accuracy">0%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Всего сигналов</div>
+                        <div class="stat-value" id="totalSignals">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">WIN / LOSS</div>
+                        <div class="stat-value" id="winLoss">0 / 0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Streak</div>
+                        <div class="stat-value" id="streak">0</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-logo">Dacha.53</div>
-        <p class="footer-copy">© 2024 Аренда A-frame дома с баней и купелью</p>
-    </footer>
-
+        
+        <div class="card">
+            <div class="card-title">🎲 Уровень уверенности</div>
+            <div class="confidence-bar">
+                <div id="confidenceBar" class="confidence-fill" style="width: 0%;">0%</div>
+            </div>
+        </div>
+        
+        <div class="update-time" id="updateTime">
+            Обновлено: --:--:--
+        </div>
+    </div>
+    
     <script>
-        // Navbar scroll
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // Mobile menu
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
+        // Simulated trading data
+        let basePrice = 85000 + Math.random() * 5000;
+        let signal = 'UP';
+        let stats = {
+            wins: 42,
+            losses: 28,
+            total: 70,
+            streak: 3
+        };
+        
+        function generateSignal() {
+            // Simulate price movement
+            const priceChange = (Math.random() - 0.5) * 500;
+            basePrice = Math.max(80000, Math.min(95000, basePrice + priceChange));
+            
+            // Calculate indicators
+            const rsi = 30 + Math.random() * 40;
+            const macd = (Math.random() - 0.5) * 200;
+            const stoch = Math.random() * 100;
+            
+            // Determine signal based on indicators
+            let bullishSignals = 0;
+            let bearishSignals = 0;
+            
+            if (rsi < 40) bullishSignals++;
+            if (rsi > 60) bearishSignals++;
+            if (macd > 0) bullishSignals++;
+            if (macd < 0) bearishSignals++;
+            if (stoch < 30) bullishSignals++;
+            if (stoch > 70) bearishSignals++;
+            
+            signal = bullishSignals > bearishSignals ? 'UP' : 'DOWN';
+            const confidence = 50 + Math.abs(bullishSignals - bearishSignals) * 10 + Math.random() * 15;
+            
+            // Update display
+            const signalDisplay = document.getElementById('signalDisplay');
+            if (signal === 'UP') {
+                signalDisplay.textContent = '🚀 UP - ПОКУПАТЬ';
+                signalDisplay.className = 'signal-display signal-up';
+            } else {
+                signalDisplay.textContent = '📉 DOWN - ПРОДАВАТЬ';
+                signalDisplay.className = 'signal-display signal-down';
+            }
+            
+            // Update market data
+            const change15m = ((Math.random() - 0.5) * 2).toFixed(2);
+            document.getElementById('currentPrice').textContent = `$${basePrice.toFixed(2)}`;
+            document.getElementById('currentPrice2').textContent = `$${basePrice.toFixed(2)}`;
+            document.getElementById('priceChange').innerHTML = change15m >= 0 
+                ? `<span class="positive">+${change15m}%</span>` 
+                : `<span class="negative">${change15m}%</span>`;
+            document.getElementById('volume24h').textContent = `$${(Math.random() * 50 + 30).toFixed(1)}B`;
+            
+            const high = basePrice + Math.random() * 200;
+            const low = basePrice - Math.random() * 200;
+            document.getElementById('highLow').textContent = `$${high.toFixed(2)} / $${low.toFixed(2)}`;
+            
+            document.getElementById('rsi').innerHTML = rsi < 40 
+                ? `<span class="positive">${rsi.toFixed(1)}</span>` 
+                : rsi > 60 
+                    ? `<span class="negative">${rsi.toFixed(1)}</span>`
+                    : `<span class="neutral">${rsi.toFixed(1)}</span>`;
+            
+            document.getElementById('macd').innerHTML = macd > 0 
+                ? `<span class="positive">+${macd.toFixed(2)}</span>`
+                : `<span class="negative">${macd.toFixed(2)}</span>`;
+            
+            // Update indicators
+            const ema50Status = signal === 'UP' ? '<span class="positive">Бычий</span>' : '<span class="negative">Медвежий</span>';
+            document.getElementById('ema50').innerHTML = ema50Status;
+            
+            const bbStatus = rsi > 70 ? 'Верхняя граница' : rsi < 30 ? 'Нижняя граница' : 'Средняя зона';
+            document.getElementById('bb').textContent = bbStatus;
+            document.getElementById('stoch').textContent = `${stoch.toFixed(1)}%`;
+            
+            const volatility = Math.random() > 0.5 ? 'Высокая' : 'Средняя';
+            document.getElementById('atr').textContent = `${volatility} волатильность`;
+            
+            const volTrend = Math.random() > 0.5 ? 'Растущий' : 'Падающий';
+            document.getElementById('volTrend').innerHTML = volTrend === 'Растущий' 
+                ? '<span class="positive">Растущий</span>'
+                : '<span class="negative">Падающий</span>';
+            
+            const trendStrength = confidence > 70 ? 'Сильный' : confidence > 50 ? 'Умеренный' : 'Слабый';
+            document.getElementById('trendStrength').textContent = trendStrength;
+            
+            // Support/Resistance
+            document.getElementById('resistance1').textContent = `$${(basePrice + 200 + Math.random() * 100).toFixed(2)}`;
+            document.getElementById('support1').textContent = `$${(basePrice - 200 - Math.random() * 100).toFixed(2)}`;
+            document.getElementById('stopLoss').textContent = `$${(basePrice - 150).toFixed(2)}`;
+            document.getElementById('takeProfit').textContent = `$${(basePrice + 300).toFixed(2)}`;
+            
+            // Stats
+            const accuracy = ((stats.wins / stats.total) * 100).toFixed(1);
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            document.getElementById('totalSignals').textContent = stats.total;
+            document.getElementById('winLoss').textContent = `${stats.wins} / ${stats.losses}`;
+            document.getElementById('streak').innerHTML = stats.streak > 0 
+                ? `<span class="positive">+${stats.streak}</span>`
+                : `<span class="negative">${stats.streak}</span>`;
+            
+            // Confidence
+            const confidenceBar = document.getElementById('confidenceBar');
+            confidenceBar.style.width = `${confidence}%`;
+            confidenceBar.textContent = `${confidence.toFixed(1)}%`;
+            
+            if (confidence > 70) {
+                confidenceBar.style.background = 'linear-gradient(90deg, #00ff88, #00cc66)';
+                confidenceBar.style.color = '#0a0e27';
+            } else if (confidence > 50) {
+                confidenceBar.style.background = 'linear-gradient(90deg, #ffaa00, #ff8800)';
+                confidenceBar.style.color = '#0a0e27';
+            } else {
+                confidenceBar.style.background = 'linear-gradient(90deg, #ff4444, #cc0000)';
+                confidenceBar.style.color = '#fff';
+            }
+            
+            // Update time
+            const now = new Date();
+            document.getElementById('updateTime').textContent = 
+                `Обновлено: ${now.toLocaleTimeString('ru-RU')} | Следующее обновление через 15 минут`;
         }
-
-        // Close menu on link click
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('navLinks').classList.remove('active');
-            });
-        });
-
-        // Intersection Observer for animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+        
+        // Initial signal
+        generateSignal();
+        
+        // Update every 15 seconds (simulating 15-minute intervals)
+        setInterval(() => {
+            // Randomly update stats
+            if (Math.random() > 0.7) {
+                stats.total++;
+                if (Math.random() > 0.4) {
+                    stats.wins++;
+                    stats.streak = stats.streak > 0 ? stats.streak + 1 : 1;
+                } else {
+                    stats.losses++;
+                    stats.streak = stats.streak < 0 ? stats.streak - 1 : -1;
                 }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.gallery-item, .amenity-card, .pricing-card, .feature-row').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
+            }
+            generateSignal();
+        }, 15000);
+        
+        // Real-time price updates every 3 seconds
+        setInterval(() => {
+            const microChange = (Math.random() - 0.5) * 50;
+            basePrice = Math.max(80000, Math.min(95000, basePrice + microChange));
+            document.getElementById('currentPrice').textContent = `$${basePrice.toFixed(2)}`;
+            document.getElementById('currentPrice2').textContent = `$${basePrice.toFixed(2)}`;
+        }, 3000);
     </script>
-
 </body>
 </html>
