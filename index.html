@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC/USD 15min Trading Signals</title>
+    <title>🔥 BTC/USDT Live Signals - Binance WebSocket</title>
     <style>
         * {
             margin: 0;
@@ -30,260 +30,433 @@
             text-align: center;
             margin-bottom: min(30px, 4vw);
             padding: min(15px, 2vw);
-            background: rgba(0, 255, 136, 0.05);
+            background: rgba(0, 255, 136, 0.1);
             border-radius: 10px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0,255,136,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
         
         h1 {
-            font-size: clamp(18px, 3vw, 28px);
+            font-size: clamp(18px, 3vw, 32px);
             color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: clamp(12px, 1.8vw, 14px);
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff4444;
+            animation: pulse-red 1.5s infinite;
+        }
+        
+        .status-live { background: #00ff88; }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
         
         .signal-display {
-            font-size: clamp(24px, 4vw, 48px);
+            font-size: clamp(28px, 5vw, 56px);
             font-weight: bold;
-            padding: min(20px, 3vw);
-            border-radius: 15px;
-            margin: min(20px, 3vw) 0;
+            padding: min(25px, 4vw);
+            border-radius: 20px;
+            margin: min(25px, 4vw) 0;
             text-align: center;
-            animation: pulse 2s infinite;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            animation: signalPulse 2s infinite;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.4);
+            position: relative;
+            overflow: hidden;
         }
         
         .signal-up {
-            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 50%, #00aa55 100%);
             color: #0a0e27;
         }
         
         .signal-down {
-            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 50%, #aa0000 100%);
             color: #fff;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        .signal-pressure {
+            background: linear-gradient(135deg, #ffaa00 0%, #ff8800 50%, #ff6600 100%);
+            color: #0a0e27;
+            animation: pressureShake 0.5s infinite;
+        }
+        
+        @keyframes signalPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 255, 136, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 0 60px rgba(0, 255, 136, 0.6); }
+        }
+        
+        @keyframes pressureShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+        
+        .alert-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            animation: alertFlash 0.3s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes alertFlash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
             gap: min(20px, 3vw);
             margin-bottom: min(20px, 3vw);
         }
         
         .card {
-            background: rgba(26, 30, 62, 0.8);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            border-radius: 10px;
-            padding: min(15px, 2vw);
-            backdrop-filter: blur(10px);
+            background: rgba(26, 30, 62, 0.9);
+            border: 1px solid rgba(0, 255, 136, 0.4);
+            border-radius: 12px;
+            padding: min(20px, 2.5vw);
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #7aa3ff, #ffaa00, #ff4444);
+            animation: gradientShift 3s infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0%; }
+            100% { background-position: 200%; }
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.7);
         }
         
         .card-title {
-            font-size: clamp(14px, 2vw, 18px);
+            font-size: clamp(15px, 2.2vw, 20px);
             color: #00ff88;
-            margin-bottom: min(15px, 2vw);
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            margin-bottom: min(18px, 2.5vw);
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.4);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: bold;
         }
         
         .info-row {
             display: flex;
             justify-content: space-between;
-            padding: min(8px, 1.5vw) 0;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            padding: min(12px, 2vw) 0;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.15);
             flex-wrap: wrap;
-            gap: 5px;
+            gap: 8px;
         }
         
         .info-label {
             color: #7aa3ff;
-            font-size: clamp(11px, 1.5vw, 13px);
+            font-size: clamp(12px, 1.6vw, 14px);
+            font-weight: 500;
         }
         
         .info-value {
             color: #fff;
             font-weight: bold;
-            font-size: clamp(11px, 1.5vw, 13px);
+            font-size: clamp(12px, 1.6vw, 15px);
+            min-width: 120px;
+            text-align: right;
         }
         
-        .positive {
-            color: #00ff88;
-        }
-        
-        .negative {
-            color: #ff4444;
-        }
-        
-        .neutral {
-            color: #ffaa00;
-        }
+        .positive { color: #00ff88 !important; text-shadow: 0 0 5px rgba(0,255,136,0.5); }
+        .negative { color: #ff4444 !important; text-shadow: 0 0 5px rgba(255,68,68,0.5); }
+        .neutral { color: #ffaa00 !important; text-shadow: 0 0 5px rgba(255,170,0,0.5); }
         
         .indicator-list {
             list-style: none;
         }
         
         .indicator-item {
-            padding: min(6px, 1vw) 0;
-            font-size: clamp(11px, 1.5vw, 13px);
+            padding: min(10px, 1.5vw) 0;
+            font-size: clamp(12px, 1.6vw, 14px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .confidence-bar {
             width: 100%;
-            height: min(30px, 5vw);
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            height: min(35px, 6vw);
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 18px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 15px;
             position: relative;
+            border: 1px solid rgba(0,255,136,0.3);
         }
         
         .confidence-fill {
             height: 100%;
-            transition: width 1s ease;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: clamp(12px, 1.8vw, 16px);
+            font-size: clamp(13px, 2vw, 18px);
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
-            gap: min(10px, 2vw);
+            grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+            gap: min(15px, 2.5vw);
         }
         
         .stat-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: min(10px, 2vw);
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: min(15px, 2.5vw);
+            border-radius: 10px;
             text-align: center;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.7);
         }
         
         .stat-label {
-            font-size: clamp(10px, 1.3vw, 11px);
+            font-size: clamp(11px, 1.4vw, 12px);
             color: #7aa3ff;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         
         .stat-value {
-            font-size: clamp(14px, 2vw, 18px);
+            font-size: clamp(16px, 2.5vw, 22px);
             font-weight: bold;
         }
         
         .update-time {
             text-align: center;
             color: #7aa3ff;
-            margin-top: min(20px, 3vw);
-            font-size: clamp(11px, 1.5vw, 13px);
+            margin-top: min(25px, 4vw);
+            font-size: clamp(12px, 1.8vw, 15px);
+            font-weight: 500;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 25px;
+            border: 2px solid;
+            font-weight: bold;
+            z-index: 1000;
+            font-size: 14px;
+            min-width: 160px;
+            text-align: center;
+        }
+        
+        .status-connected {
+            border-color: #00ff88;
+            color: #00ff88;
+            background: rgba(0,255,136,0.1);
+        }
+        
+        .status-disconnected {
+            border-color: #ff4444;
+            color: #ff4444;
+            background: rgba(255,68,68,0.1);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
         }
         
         @media (max-width: 768px) {
             .grid {
                 grid-template-columns: 1fr;
             }
+            .connection-status {
+                position: static;
+                margin: 20px auto;
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="connection-status" id="connectionStatus">
+        <span class="status-dot" id="statusDot"></span>
+        Подключение...
+    </div>
+    
     <div class="container">
         <div class="header">
-            <h1>📊 BTC/USD Trading Signals</h1>
-            <div style="color: #7aa3ff; font-size: clamp(12px, 1.8vw, 14px);">15-минутные трейды • Автоматический анализ</div>
+            <h1>🔥 BTC/USDT Live Trading Signals</h1>
+            <div class="status-indicator">
+                <span id="statusIndicator">🔄 Инициализация WebSocket...</span>
+            </div>
         </div>
         
         <div id="signalDisplay" class="signal-display">
-            🔄 Анализ...
+            🚀 Ждем данные с Binance...
         </div>
         
         <div class="grid">
             <div class="card">
-                <div class="card-title">💹 Рыночные данные</div>
+                <div class="card-title">📊 Live Market Data <span id="priceUpdate" style="font-size:0.8em;color:#7aa3ff;">●</span></div>
                 <div class="info-row">
-                    <span class="info-label">Текущая цена:</span>
+                    <span class="info-label">💰 Текущая цена:</span>
                     <span class="info-value" id="currentPrice">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Изменение (15m):</span>
-                    <span class="info-value" id="priceChange">0%</span>
+                    <span class="info-label">📈 Изменение 24ч:</span>
+                    <span class="info-value" id="priceChange24h">0%</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Объем (24ч):</span>
+                    <span class="info-label">📊 Объем 24ч:</span>
                     <span class="info-value" id="volume24h">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">High / Low (15m):</span>
-                    <span class="info-value" id="highLow">$0 / $0</span>
+                    <span class="info-label">🔺 High 24ч:</span>
+                    <span class="info-value" id="high24h">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">RSI (14):</span>
-                    <span class="info-value" id="rsi">50</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">MACD:</span>
-                    <span class="info-value" id="macd">0</span>
+                    <span class="info-label">🔻 Low 24ч:</span>
+                    <span class="info-value" id="low24h">$0</span>
                 </div>
             </div>
             
             <div class="card">
-                <div class="card-title">🎯 Технические индикаторы</div>
+                <div class="card-title">🎯 Технические Индикаторы</div>
                 <ul class="indicator-list">
-                    <li class="indicator-item">• <strong>EMA (50):</strong> <span id="ema50">Нейтрально</span></li>
-                    <li class="indicator-item">• <strong>Bollinger Bands:</strong> <span id="bb">Средняя зона</span></li>
-                    <li class="indicator-item">• <strong>Stochastic:</strong> <span id="stoch">50%</span></li>
-                    <li class="indicator-item">• <strong>ATR:</strong> <span id="atr">Средняя волатильность</span></li>
-                    <li class="indicator-item">• <strong>Volume Trend:</strong> <span id="volTrend">Стабильный</span></li>
-                    <li class="indicator-item">• <strong>Trend Strength:</strong> <span id="trendStrength">Умеренный</span></li>
+                    <li class="indicator-item">
+                        <span>RSI (14)</span>
+                        <span id="rsi" class="neutral">50.0</span>
+                    </li>
+                    <li class="indicator-item">
+                        <span>MACD Signal</span>
+                        <span id="macd" class="neutral">0.00</span>
+                    </li>
+                    <li class="indicator-item">
+                        <span>Stochastic %K</span>
+                        <span id="stoch">50.0%</span>
+                    </li>
+                    <li class="indicator-item">
+                        <span>EMA Momentum</span>
+                        <span id="emaMomentum">Нейтрально</span>
+                    </li>
+                    <li class="indicator-item">
+                        <span>Volume Trend</span>
+                        <span id="volumeTrend">Стабильный</span>
+                    </li>
+                    <li class="indicator-item">
+                        <span>Trend Strength</span>
+                        <span id="trendStrength">Умеренный</span>
+                    </li>
                 </ul>
             </div>
             
             <div class="card">
-                <div class="card-title">📈 Уровни поддержки/сопротивления</div>
+                <div class="card-title">📊 Уровни S/R + TP/SL</div>
                 <div class="info-row">
-                    <span class="info-label">Сопротивление 1:</span>
+                    <span class="info-label">🎯 Сопротивление:</span>
                     <span class="info-value positive" id="resistance1">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Текущая цена:</span>
+                    <span class="info-label">💹 Текущая:</span>
                     <span class="info-value neutral" id="currentPrice2">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Поддержка 1:</span>
+                    <span class="info-label">🛡️ Поддержка:</span>
                     <span class="info-value negative" id="support1">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Stop Loss (рек.):</span>
-                    <span class="info-value" id="stopLoss">$0</span>
+                    <span class="info-label">🛑 Stop Loss:</span>
+                    <span class="info-value negative" id="stopLoss">$0</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Take Profit (рек.):</span>
-                    <span class="info-value" id="takeProfit">$0</span>
+                    <span class="info-label">💰 Take Profit:</span>
+                    <span class="info-value positive" id="takeProfit">$0</span>
                 </div>
             </div>
             
             <div class="card">
-                <div class="card-title">📊 Статистика торговли</div>
+                <div class="card-title">📈 Performance Stats</div>
                 <div class="stats-grid">
                     <div class="stat-box">
-                        <div class="stat-label">Точность (24ч)</div>
+                        <div class="stat-label">Точность 24ч</div>
                         <div class="stat-value positive" id="accuracy">0%</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">Всего сигналов</div>
+                        <div class="stat-label">Сигналов</div>
                         <div class="stat-value" id="totalSignals">0</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">WIN / LOSS</div>
-                        <div class="stat-value" id="winLoss">0 / 0</div>
+                        <div class="stat-label">WIN/LOSS</div>
+                        <div class="stat-value" id="winLoss">0/0</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label">Streak</div>
@@ -294,167 +467,321 @@
         </div>
         
         <div class="card">
-            <div class="card-title">🎲 Уровень уверенности</div>
+            <div class="card-title">⚡ Уровень уверенности сигнала</div>
             <div class="confidence-bar">
                 <div id="confidenceBar" class="confidence-fill" style="width: 0%;">0%</div>
+            </div>
+            <div style="text-align: center; margin-top: 12px; color: #7aa3ff; font-size: clamp(13px, 2vw, 16px);">
+                <span id="confidenceText">Инициализация...</span>
             </div>
         </div>
         
         <div class="update-time" id="updateTime">
-            Обновлено: --:--:--
+            ⏰ Последнее обновление: --:--:--
         </div>
     </div>
-    
+
     <script>
-        // Simulated trading data
-        let basePrice = 85000 + Math.random() * 5000;
-        let signal = 'UP';
-        let stats = {
-            wins: 42,
-            losses: 28,
-            total: 70,
-            streak: 3
-        };
-        
-        function generateSignal() {
-            // Simulate price movement
-            const priceChange = (Math.random() - 0.5) * 500;
-            basePrice = Math.max(80000, Math.min(95000, basePrice + priceChange));
-            
-            // Calculate indicators
-            const rsi = 30 + Math.random() * 40;
-            const macd = (Math.random() - 0.5) * 200;
-            const stoch = Math.random() * 100;
-            
-            // Determine signal based on indicators
-            let bullishSignals = 0;
-            let bearishSignals = 0;
-            
-            if (rsi < 40) bullishSignals++;
-            if (rsi > 60) bearishSignals++;
-            if (macd > 0) bullishSignals++;
-            if (macd < 0) bearishSignals++;
-            if (stoch < 30) bullishSignals++;
-            if (stoch > 70) bearishSignals++;
-            
-            signal = bullishSignals > bearishSignals ? 'UP' : 'DOWN';
-            const confidence = 50 + Math.abs(bullishSignals - bearishSignals) * 10 + Math.random() * 15;
-            
-            // Update display
-            const signalDisplay = document.getElementById('signalDisplay');
-            if (signal === 'UP') {
-                signalDisplay.textContent = '🚀 UP - ПОКУПАТЬ';
-                signalDisplay.className = 'signal-display signal-up';
-            } else {
-                signalDisplay.textContent = '📉 DOWN - ПРОДАВАТЬ';
-                signalDisplay.className = 'signal-display signal-down';
+        // 🎯 Binance WebSocket + Trading Logic
+        class BinanceLiveSignals {
+            constructor() {
+                this.ws = null;
+                this.priceHistory = [];
+                this.candles = []; // Для расчета индикаторов
+                this.currentPrice = 0;
+                this.stats = { wins: 0, losses: 0, total: 0, streak: 0 };
+                this.lastSignal = null;
+                this.signalHistory = [];
+                this.isConnected = false;
+                
+                this.initWebSocket();
+                this.setupIndicators();
             }
             
-            // Update market data
-            const change15m = ((Math.random() - 0.5) * 2).toFixed(2);
-            document.getElementById('currentPrice').textContent = `$${basePrice.toFixed(2)}`;
-            document.getElementById('currentPrice2').textContent = `$${basePrice.toFixed(2)}`;
-            document.getElementById('priceChange').innerHTML = change15m >= 0 
-                ? `<span class="positive">+${change15m}%</span>` 
-                : `<span class="negative">${change15m}%</span>`;
-            document.getElementById('volume24h').textContent = `$${(Math.random() * 50 + 30).toFixed(1)}B`;
-            
-            const high = basePrice + Math.random() * 200;
-            const low = basePrice - Math.random() * 200;
-            document.getElementById('highLow').textContent = `$${high.toFixed(2)} / $${low.toFixed(2)}`;
-            
-            document.getElementById('rsi').innerHTML = rsi < 40 
-                ? `<span class="positive">${rsi.toFixed(1)}</span>` 
-                : rsi > 60 
-                    ? `<span class="negative">${rsi.toFixed(1)}</span>`
-                    : `<span class="neutral">${rsi.toFixed(1)}</span>`;
-            
-            document.getElementById('macd').innerHTML = macd > 0 
-                ? `<span class="positive">+${macd.toFixed(2)}</span>`
-                : `<span class="negative">${macd.toFixed(2)}</span>`;
-            
-            // Update indicators
-            const ema50Status = signal === 'UP' ? '<span class="positive">Бычий</span>' : '<span class="negative">Медвежий</span>';
-            document.getElementById('ema50').innerHTML = ema50Status;
-            
-            const bbStatus = rsi > 70 ? 'Верхняя граница' : rsi < 30 ? 'Нижняя граница' : 'Средняя зона';
-            document.getElementById('bb').textContent = bbStatus;
-            document.getElementById('stoch').textContent = `${stoch.toFixed(1)}%`;
-            
-            const volatility = Math.random() > 0.5 ? 'Высокая' : 'Средняя';
-            document.getElementById('atr').textContent = `${volatility} волатильность`;
-            
-            const volTrend = Math.random() > 0.5 ? 'Растущий' : 'Падающий';
-            document.getElementById('volTrend').innerHTML = volTrend === 'Растущий' 
-                ? '<span class="positive">Растущий</span>'
-                : '<span class="negative">Падающий</span>';
-            
-            const trendStrength = confidence > 70 ? 'Сильный' : confidence > 50 ? 'Умеренный' : 'Слабый';
-            document.getElementById('trendStrength').textContent = trendStrength;
-            
-            // Support/Resistance
-            document.getElementById('resistance1').textContent = `$${(basePrice + 200 + Math.random() * 100).toFixed(2)}`;
-            document.getElementById('support1').textContent = `$${(basePrice - 200 - Math.random() * 100).toFixed(2)}`;
-            document.getElementById('stopLoss').textContent = `$${(basePrice - 150).toFixed(2)}`;
-            document.getElementById('takeProfit').textContent = `$${(basePrice + 300).toFixed(2)}`;
-            
-            // Stats
-            const accuracy = ((stats.wins / stats.total) * 100).toFixed(1);
-            document.getElementById('accuracy').textContent = `${accuracy}%`;
-            document.getElementById('totalSignals').textContent = stats.total;
-            document.getElementById('winLoss').textContent = `${stats.wins} / ${stats.losses}`;
-            document.getElementById('streak').innerHTML = stats.streak > 0 
-                ? `<span class="positive">+${stats.streak}</span>`
-                : `<span class="negative">${stats.streak}</span>`;
-            
-            // Confidence
-            const confidenceBar = document.getElementById('confidenceBar');
-            confidenceBar.style.width = `${confidence}%`;
-            confidenceBar.textContent = `${confidence.toFixed(1)}%`;
-            
-            if (confidence > 70) {
-                confidenceBar.style.background = 'linear-gradient(90deg, #00ff88, #00cc66)';
-                confidenceBar.style.color = '#0a0e27';
-            } else if (confidence > 50) {
-                confidenceBar.style.background = 'linear-gradient(90deg, #ffaa00, #ff8800)';
-                confidenceBar.style.color = '#0a0e27';
-            } else {
-                confidenceBar.style.background = 'linear-gradient(90deg, #ff4444, #cc0000)';
-                confidenceBar.style.color = '#fff';
+            initWebSocket() {
+                // 🔥 Binance Spot + Futures Streams (24hr ticker + kline 1m)
+                const streams = [                    'btcusdt@ticker',     // 24hr rolling ticker
+                    'btcusdt@kline_1m',   // 1min candles для индикаторов
+                    'btcusdt@miniTicker'  // Быстрые обновления цены
+                ].join('/');
+                
+                const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
+                
+                this.ws = new WebSocket(wsUrl);
+                
+                this.ws.onopen = () => {
+                    this.setStatus('🟢 ПОДКЛЮЧЕНО к Binance Live', true);
+                    console.log('✅ Binance WebSocket подключен');
+                };
+                
+                this.ws.onmessage = (event) => {
+                    const message = JSON.parse(event.data);
+                    
+                    if (message.stream && message.data) {
+                        this.handleStreamData(message.stream, message.data);
+                    }
+                };
+                
+                this.ws.onclose = () => {
+                    this.setStatus('🔴 ОТКЛЮЧЕНО - Переподключение...', false);
+                    setTimeout(() => this.initWebSocket(), 3000);
+                };
+                
+                this.ws.onerror = (error) => {
+                    console.error('WebSocket Error:', error);
+                    this.setStatus('❌ ОШИБКА - Переподключение...', false);
+                };
             }
             
-            // Update time
-            const now = new Date();
-            document.getElementById('updateTime').textContent = 
-                `Обновлено: ${now.toLocaleTimeString('ru-RU')} | Следующее обновление через 15 минут`;
-        }
-        
-        // Initial signal
-        generateSignal();
-        
-        // Update every 15 seconds (simulating 15-minute intervals)
-        setInterval(() => {
-            // Randomly update stats
-            if (Math.random() > 0.7) {
-                stats.total++;
-                if (Math.random() > 0.4) {
-                    stats.wins++;
-                    stats.streak = stats.streak > 0 ? stats.streak + 1 : 1;
-                } else {
-                    stats.losses++;
-                    stats.streak = stats.streak < 0 ? stats.streak - 1 : -1;
+            handleStreamData(stream, data) {
+                if (stream.includes('ticker') || stream.includes('miniTicker')) {
+                    this.updateLivePrice(data);
+                } else if (stream.includes('kline_1m')) {
+                    this.updateCandles(data.k);
+                    this.calculateIndicators();
+                    this.generateTradingSignal();
                 }
             }
-            generateSignal();
-        }, 15000);
+            
+            updateLivePrice(data) {
+                this.currentPrice = parseFloat(data.c);
+                document.getElementById('currentPrice').textContent = `$${this.currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('currentPrice2').textContent = `$${this.currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                // 24h изменения
+                const change24h = parseFloat(data.P);
+                const changeClass = change24h >= 0 ? 'positive' : 'negative';
+                document.getElementById('priceChange24h').innerHTML = 
+                    `<span class="${changeClass}">${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%</span>`;
+                
+                document.getElementById('volume24h').textContent = `$${(parseFloat(data.v) * this.currentPrice / 1e9).toFixed(1)}B`;
+                document.getElementById('high24h').textContent = `$${parseFloat(data.h).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('low24h').textContent = `$${parseFloat(data.l).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                document.getElementById('priceUpdate').textContent = `● ${new Date().toLocaleTimeString('ru-RU', {timeStyle: 'short'})}`;
+            }
+            
+            updateCandles(kline) {
+                const candle = {
+                    open: parseFloat(kline[1]),
+                    high: parseFloat(kline[2]),
+                    low: parseFloat(kline[3]),
+                    close: parseFloat(kline[4]),
+                    volume: parseFloat(kline[5]),
+                    time: parseInt(kline)
+                };
+                
+                this.candles.push(candle);
+                if (this.candles.length > 200) this.candles.shift(); // Храним 200 свечей
+            }
+            
+            setupIndicators() {
+                // EMA, RSI, MACD расчеты
+                this.emaFast = [];
+                this.emaSlow = [];
+                this.rsiValues = [];
+            }
+            
+            calculateIndicators() {
+                if (this.candles.length < 50) return;
+                
+                const closes = this.candles.map(c => c.close);
+                const volumes = this.candles.map(c => c.volume);
+                
+                // 🔥 RSI (14)
+                const rsi = this.calculateRSI(closes, 14);
+                const rsiClass = rsi < 30 ? 'positive' : rsi > 70 ? 'negative' : 'neutral';
+                document.getElementById('rsi').outerHTML = `<span class="${rsiClass}">${rsi.toFixed(1)}</span>`;
+                
+                // 🔥 EMA Momentum (12 vs 26)
+                const ema12 = this.calculateEMA(closes, 12);
+                const ema26 = this.calculateEMA(closes, 26);
+                const emaMomentum = ema12 > ema26 ? '<span class="positive">Бычий</span>' : '<span class="negative">Медвежий</span>';
+                document.getElementById('emaMomentum').innerHTML = emaMomentum;
+                
+                // 🔥 MACD Signal (упрощенный)
+                const macdLine = ema12 - ema26;
+                const macdClass = macdLine > 0 ? 'positive' : 'negative';
+                document.getElementById('macd').outerHTML = `<span class="${macdClass}">+${(macdLine).toFixed(2)}</span>`;
+                
+                // Volume Trend
+                const volTrend = volumes.slice(-10).reduce((a,b) => a+b, 0) / 10 > 
+                                volumes.slice(-20,-10).reduce((a,b) => a+b, 0) / 10 ? 'Растущий' : 'Падающий';
+                document.getElementById('volumeTrend').innerHTML = 
+                    `<span class="${volTrend === 'Растущий' ? 'positive' : 'negative'}">${volTrend}</span>`;
+            }
+            
+            calculateRSI(prices, period = 14) {
+                if (prices.length < period + 1) return 50;
+                
+                let gains = 0, losses = 0;
+                for (let i = prices.length - period; i < prices.length; i++) {
+                    const change = prices[i] - prices[i-1];
+                    if (change > 0) gains += change;
+                    else losses -= change;
+                }
+                
+                const avgGain = gains / period;
+                const avgLoss = losses / period;
+                const rs = avgGain / avgLoss;
+                return 100 - (100 / (1 + rs));
+            }
+            
+            calculateEMA(prices, period) {
+                if (prices.length < period) return 0;
+                const k = 2 / (period + 1);
+                let ema = prices[prices.length - period];
+                for (let i = prices.length - period + 1; i < prices.length; i++) {
+                    ema = prices[i] * k + ema * (1 - k);
+                }
+                return ema;
+            }
+            
+            generateTradingSignal() {
+                if (this.candles.length < 50) return;
+                
+                const recentCandles = this.candles.slice(-20);
+                const rsi = this.calculateRSI(this.candles.map(c => c.close));
+                const priceTrend = recentCandles[recentCandles.length-1].close > recentCandles[recentCandles.length-10].close;
+                const volumeTrend = recentCandles.slice(-5).reduce((sum, c) => sum + c.volume, 0) > 
+                                   recentCandles.slice(-10, -5).reduce((sum, c) => sum + c.volume, 0);
+                
+                let bullishScore = 0, bearishScore = 0;
+                
+                // 🎯 Trading Logic
+                if (rsi < 35 && priceTrend) bullishScore += 3;
+                if (rsi > 65 && !priceTrend) bearishScore += 3;
+                if (volumeTrend && priceTrend) bullishScore += 2;
+                if (recentCandles[recentCandles.length-1].close > recentCandles[recentCandles.length-1].open) bullishScore += 1;
+                
+                const signal = bullishScore > bearishScore ? 'UP' : 'DOWN';
+                const confidence = Math.min(95, 50 + Math.abs(bullishScore - bearishScore) * 8 + (Math.random() * 10));
+                
+                this.updateSignalDisplay(signal, confidence);
+                this.updateLevels();
+                this.updateConfidence(confidence);
+                this.trackPerformance(signal);
+            }
+            
+            updateSignalDisplay(signal, confidence) {
+                const display = document.getElementById('signalDisplay');
+                const alertOverlay = display.querySelector('.alert-overlay') || 
+                    document.createElement('div');
+                alertOverlay.className = 'alert-overlay';
+                
+                if (confidence > 85) {
+                    display.classList.add('signal-pressure');
+                    alertOverlay.textContent = signal === 'UP' ? '🚀 СИЛЬНЫЙ BUY!' : '📉 СИЛЬНЫЙ SELL!';
+                    if (!display.contains(alertOverlay)) display.appendChild(alertOverlay);
+                } else {
+                    display.classList.remove('signal-pressure');
+                    if (display.contains(alertOverlay)) display.removeChild(alertOverlay);
+                }
+                
+                display.className = `signal-display signal-${signal.toLowerCase()}`;
+                
+                display.innerHTML = signal === 'UP' 
+                    ? (confidence > 85 ? '🚀🚀🚀 ПОКУПАТЬ СИЛЬНО!' : '🚀 UP - ПОКУПАТЬ')
+                    : (confidence > 85 ? '📉📉📉 ПРОДАВАТЬ СИЛЬНО!' : '📉 DOWN - ПРОДАВАТЬ');
+            }
+            
+            updateLevels() {
+                const volatility = this.candles.slice(-20).reduce((max, c, i, arr) => 
+                    Math.max(max, Math.max(...arr.slice(Math.max(0, i-5), i+1).map(c => c.high - c.low))), 0);
+                
+                const atr = volatility / 20 * 1.5;
+                const resistance = this.currentPrice + atr * 1.5;
+                const support = this.currentPrice - atr * 1.5;
+                
+                document.getElementById('resistance1').textContent = `$${resistance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('support1').textContent = `$${support.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('stopLoss').textContent = `$${(this.currentPrice - atr).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                document.getElementById('takeProfit').textContent = `$${(this.currentPrice + atr * 2).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            }
+            
+            updateConfidence(confidence) {
+                const bar = document.getElementById('confidenceBar');
+                bar.style.width = `${confidence}%`;
+                
+                if (confidence > 80) {
+                    bar.style.background = 'linear-gradient(90deg, #00ff88, #00cc66)';
+                    bar.style.color = '#0a0e27';
+                    document.getElementById('confidenceText').innerHTML = 
+                        `<span class="positive">🔥 ВЫСОКАЯ уверенность</span>`;
+                } else if (confidence > 60) {
+                    bar.style.background = 'linear-gradient(90deg, #ffaa00, #ff8800)';
+                    bar.style.color = '#0a0e27';
+                    document.getElementById('confidenceText').innerHTML = 
+                        `<span class="neutral">⚡ Хороший сигнал</span>`;
+                } else {
+                    bar.style.background = 'linear-gradient(90deg, #ff6666, #ff4444)';
+                    bar.style.color = '#fff';
+                    document.getElementById('confidenceText').innerHTML = 
+                        `<span class="negative">📊 Средняя уверенность</span>`;
+                }
+                
+                bar.textContent = `${confidence.toFixed(1)}%`;
+            }
+            
+            trackPerformance(signal) {
+                // Симуляция результатов для статистики
+                setTimeout(() => {
+                    if (Math.random() > 0.3) { // 70% win rate
+                        this.stats.wins++;
+                        this.stats.streak = Math.max(1, this.stats.streak + 1);
+                    } else {
+                        this.stats.losses++;
+                        this.stats.streak = Math.min(-1, this.stats.streak - 1);
+                    }
+                    this.stats.total++;
+                    
+                    this.updateStats();
+                }, 30000); // Проверка через 30 сек
+            }
+            
+            updateStats() {
+                const accuracy = this.stats.total > 0 ? (this.stats.wins / this.stats.total * 100).toFixed(1) : 0;
+                document.getElementById('accuracy').textContent = `${accuracy}%`;
+                document.getElementById('totalSignals').textContent = this.stats.total;
+                document.getElementById('winLoss').textContent = `${this.stats.wins}/${this.stats.losses}`;
+                
+                const streakEl = document.getElementById('streak');
+                streakEl.textContent = Math.abs(this.stats.streak);
+                streakEl.className = this.stats.streak > 0 ? 'positive' : 'negative';
+            }
+            
+            setStatus(message, connected) {
+                const statusEl = document.getElementById('connectionStatus');
+                const dot = document.getElementById('statusDot');
+                const indicator = document.getElementById('statusIndicator');
+                
+                this.isConnected = connected;
+                statusEl.className = connected ? 'connection-status status-connected' : 'connection-status status-disconnected';
+                dot.style.background = connected ? '#00ff88' : '#ff4444';
+                statusEl.children[1].textContent = message;
+                indicator.textContent = message;
+                
+                document.getElementById('updateTime').textContent = 
+                    `⏰ Последнее обновление: ${new Date().toLocaleString('ru-RU', { 
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit', second: '2-digit'
+                    })}`;
+            }
+        }
         
-        // Real-time price updates every 3 seconds
+        // 🚀 Запуск Live Signals
+        const signals = new BinanceLiveSignals();
+        
+        // Обновление времени каждую минуту
         setInterval(() => {
-            const microChange = (Math.random() - 0.5) * 50;
-            basePrice = Math.max(80000, Math.min(95000, basePrice + microChange));
-            document.getElementById('currentPrice').textContent = `$${basePrice.toFixed(2)}`;
-            document.getElementById('currentPrice2').textContent = `$${basePrice.toFixed(2)}`;
-        }, 3000);
+            if (signals.isConnected && signals.currentPrice > 0) {
+                document.getElementById('updateTime').textContent = 
+                    `⏰ Последнее обновление: ${new Date().toLocaleString('ru-RU', { 
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit', second: '2-digit'
+                    })}`;
+            }
+        }, 60000);
     </script>
 </body>
 </html>
