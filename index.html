@@ -25,8 +25,8 @@
 }
 body { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace; background: var(--bg0); color: var(--text); min-height: 100vh; }
 
-/* LAYOUT */
-.app { display: grid; grid-template-columns: 280px 1fr 300px; grid-template-rows: 56px 1fr; height: 100vh; gap: 1px; background: var(--border); }
+/* LAYOUT - Added 85px footer row */
+.app { display: grid; grid-template-columns: 280px 1fr 300px; grid-template-rows: 56px 1fr 85px; height: 100vh; gap: 1px; background: var(--border); }
 
 /* HEADER */
 .hdr { grid-column: 1/-1; background: var(--bg1); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
@@ -136,6 +136,20 @@ body { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace; backgr
 .ctx-lbl { font-size: 9px; color: var(--text2); text-transform: uppercase; }
 .ctx-val { font-size: 15px; font-weight: 800; margin-top: 3px; }
 
+/* 15M TREND FOOTER */
+.trend-foot { grid-column: 1/-1; background: var(--bg1); border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; }
+.trend-item { background: var(--bg2); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; transition: .3s; border: 1px solid transparent; position: relative; overflow: hidden; }
+.trend-item.up { border-color: rgba(0,230,118,.3); background: linear-gradient(180deg, rgba(0,230,118,.1) 0%, var(--bg2) 100%); }
+.trend-item.down { border-color: rgba(255,23,68,.3); background: linear-gradient(180deg, rgba(255,23,68,.1) 0%, var(--bg2) 100%); }
+.trend-time { font-size: 10px; color: var(--text2); margin-bottom: 4px; font-weight: 600; }
+.trend-arrow { font-size: 22px; font-weight: 900; line-height: 1; }
+.trend-item.up .trend-arrow { color: var(--green); }
+.trend-item.down .trend-arrow { color: var(--red); }
+.trend-val { font-size: 11px; font-weight: 700; margin-top: 2px; }
+.trend-item.up .trend-val { color: var(--green); }
+.trend-item.down .trend-val { color: var(--red); }
+.trend-lbl { position: absolute; bottom: 3px; font-size: 8px; color: var(--text2); opacity: 0.7; }
+
 /* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 2000; align-items: center; justify-content: center; }
 .modal-bg.open { display: flex; }
@@ -170,7 +184,7 @@ body { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace; backgr
 
 /* RESPONSIVE */
 @media (max-width: 1200px) { .app { grid-template-columns: 240px 1fr 260px; } }
-@media (max-width: 900px) { .app { grid-template-columns: 1fr; grid-template-rows: 56px auto; height: auto; } .side-l, .side-r { display: none; } }
+@media (max-width: 900px) { .app { grid-template-columns: 1fr; grid-template-rows: 56px auto 70px; height: auto; } .side-l, .side-r { display: none; } .main { min-height: 60vh; } }
 </style>
 </head>
 <body>
@@ -349,6 +363,29 @@ body { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace; backgr
 </div>
 
 </aside>
+
+<!-- FOOTER: 15M TREND -->
+<footer class="trend-foot">
+  <div class="trend-item" id="tr1">
+    <div class="trend-time" id="tr1Time">--:--</div>
+    <div class="trend-arrow" id="tr1Arrow">●</div>
+    <div class="trend-val" id="tr1Val">--</div>
+    <div class="trend-lbl">Last Closed</div>
+  </div>
+  <div class="trend-item" id="tr2">
+    <div class="trend-time" id="tr2Time">--:--</div>
+    <div class="trend-arrow" id="tr2Arrow">●</div>
+    <div class="trend-val" id="tr2Val">--</div>
+    <div class="trend-lbl">Prev 1</div>
+  </div>
+  <div class="trend-item" id="tr3">
+    <div class="trend-time" id="tr3Time">--:--</div>
+    <div class="trend-arrow" id="tr3Arrow">●</div>
+    <div class="trend-val" id="tr3Val">--</div>
+    <div class="trend-lbl">Prev 2</div>
+  </div>
+</footer>
+
 </div>
 
 <!-- Settings Modal -->
@@ -572,6 +609,62 @@ async function loadCandles() {
     S.candles = d.map(k => ({time: k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5]}));
   } catch (e) {
     console.error('Candle load failed:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 15M TREND LOADER (Footer)
+// ═══════════════════════════════════════════════════════════
+async function load15mTrend() {
+  try {
+    // Fetch 4 candles: [T-45m, T-30m, T-15m, Current/JustClosed]
+    // We want the last 3 CLOSED candles.
+    const r = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=4');
+    const d = await r.json();
+    
+    // Indices: 0=Oldest, 1=Middle, 2=Recent Closed, 3=Active/JustOpened
+    // We display 2 (most recent closed), 1, 0.
+    const slots = [
+      { id: 'tr1', data: d[2] }, // Most recent closed
+      { id: 'tr2', data: d[1] }, 
+      { id: 'tr3', data: d[0] }
+    ];
+    
+    slots.forEach(slot => {
+      const k = slot.data;
+      if (!k) return;
+      
+      const open = +k[1];
+      const close = +k[4];
+      const time = new Date(k[0]);
+      const isUp = close >= open;
+      
+      // Time format HH:MM
+      const h = time.getHours().toString().padStart(2, '0');
+      const m = time.getMinutes().toString().padStart(2, '0');
+      // End time is +15 mins
+      const end = new Date(time.getTime() + 15*60000);
+      const eh = end.getHours().toString().padStart(2, '0');
+      const em = end.getMinutes().toString().padStart(2, '0');
+      
+      txt(slot.id + 'Time', h + ':' + m + '-' + eh + ':' + em);
+      
+      const arrowEl = $(slot.id + 'Arrow');
+      const valEl = $(slot.id + 'Val');
+      const container = $(slot.id);
+      
+      if (container) container.className = 'trend-item ' + (isUp ? 'up' : 'down');
+      if (arrowEl) arrowEl.textContent = isUp ? '▲' : '▼';
+      
+      const pct = ((close - open) / open * 100);
+      if (valEl) {
+        valEl.textContent = (isUp ? '+' : '') + pct.toFixed(2) + '%';
+        valEl.style.color = isUp ? 'var(--green)' : 'var(--red)';
+      }
+    });
+    
+  } catch (e) {
+    console.error('15m Trend load failed', e);
   }
 }
 
@@ -1042,233 +1135,4 @@ function renderDistance(a) {
 
 // ═══════════════════════════════════════════════════════════
 // ALERT / TOAST
-// ═══════════════════════════════════════════════════════════
-function showAlert(a) {
-  const bg = $('alertBG'), box = $('alertBox');
-  if (!bg) return;
-  bg.classList.add('show');
-  
-  if (a.sig === 'BUY') {
-    box.className = 'alert-box';
-    txt('alertIco', '📈');
-    txt('alertT', '▲ BUY YES');
-    $('alertT').style.color = 'var(--green)';
-  } else {
-    box.className = 'alert-box s';
-    txt('alertIco', '📉');
-    txt('alertT', '▼ BUY NO');
-    $('alertT').style.color = 'var(--red)';
-  }
-  
-  txt('alertP', 'BTC $' + S.btc.price.toLocaleString() + ' | ' + a.conf + '%');
-  setTimeout(() => bg.classList.remove('show'), 3500);
-}
-
-function showToast(type, msg) {
-  const t = $('toast');
-  if (!t) return;
-  t.className = 'toast show' + (type === 'SELL' ? ' t-sell' : '');
-  txt('toastT', type + ' SIGNAL');
-  txt('toastM', msg);
-  setTimeout(() => t.className = 'toast', 5000);
-}
-
-// ═══════════════════════════════════════════════════════════
-// CLOCK & COUNTDOWN
-// ═══════════════════════════════════════════════════════════
-function tickClock() {
-  const n = new Date();
-  txt('clock', n.toLocaleTimeString('en-US', {hour12: false}));
-  txt('utc', n.toUTCString().split(' ')[4]);
-  
-  const m = n.getMinutes() % 15, s = n.getSeconds();
-  const rm = 14 - m, rs = 59 - s;
-  txt('cdNum', String(rm).padStart(2, '0') + ':' + String(rs).padStart(2, '0'));
-  
-  const box = $('cdBox');
-  if (box) {
-    if (rm < 2) {
-      box.className = 'cd-box closed';
-      txt('cdLabel', 'Cycle closing — wait');
-    } else {
-      box.className = 'cd-box';
-      txt('cdLabel', 'Entry window open');
-    }
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// MAIN ANALYSIS LOOP
-// ═══════════════════════════════════════════════════════════
-function runAnalysis() {
-  const a = analyze();
-  if (!a) return;
-  renderIndicators(a);
-  renderSignal(a);
-  renderContext(a);
-  renderConfluence(a);
-  renderDistance(a);
-  updateCharts(a);
-}
-
-// ═══════════════════════════════════════════════════════════
-// SETTINGS MODAL
-// ═══════════════════════════════════════════════════════════
-function openModal() {
-  $('modalBG').classList.add('open');
-  $('inKey').value = S.apiKey;
-  $('inTGToken').value = S.tgToken;
-  $('inTGChat').value = S.tgChat;
-  $('inThresh').value = S.threshold;
-  $('inInterval').value = S.interval;
-}
-
-function saveModal() {
-  S.apiKey = $('inKey').value.trim() || S.apiKey;
-  S.tgToken = $('inTGToken').value.trim();
-  S.tgChat = $('inTGChat').value.trim() || '143405349';
-  S.threshold = parseInt($('inThresh').value) || 65;
-  S.interval = parseInt($('inInterval').value) || 2000;
-  
-  localStorage.setItem('pf_key', S.apiKey);
-  localStorage.setItem('pf_tg_token', S.tgToken);
-  localStorage.setItem('pf_tg_chat', S.tgChat);
-  localStorage.setItem('pf_thresh', S.threshold);
-  localStorage.setItem('pf_interval', S.interval);
-  
-  $('modalBG').classList.remove('open');
-  
-  // Reconnect API
-  S.pfMarket = null;
-  S.pfConnected = false;
-  pfUpdate();
-  
-  // Restart analysis timer
-  if (analysisTimer) clearInterval(analysisTimer);
-  analysisTimer = setInterval(runAnalysis, S.interval);
-  
-  showToast('BUY', 'Settings saved!');
-}
-
-document.addEventListener('click', e => {
-  if (e.target === $('modalBG')) $('modalBG').classList.remove('open');
-  if (e.target === $('alertBG')) $('alertBG').classList.remove('show');
-});
-
-// Timeframe buttons
-document.querySelectorAll('.tf-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    S.chartSample = parseInt(btn.dataset.s) || 3;
-  });
-});
-
-// ═══════════════════════════════════════════════════════════
-// CHARTS
-// ═══════════════════════════════════════════════════════════
-function initCharts() {
-  const opts = (yMin, yMax) => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: { duration: 200 },
-    plugins: { legend: { display: false } },
-    scales: {
-      y: { min: yMin, max: yMax, grid: { color: '#1a2040' }, ticks: { color: '#7986cb', font: { size: 9 } } },
-      x: { grid: { display: false }, ticks: { color: '#7986cb', font: { size: 8 }, maxTicksLimit: 10, maxRotation: 0 } }
-    }
-  });
-  
-  const cm = $('cMain');
-  if (cm) CH.main = new Chart(cm.getContext('2d'), {
-    type: 'line',
-    data: { labels: [], datasets: [{ data: [], borderColor: '#448aff', borderWidth: 1.5, backgroundColor: 'rgba(68,138,255,.05)', fill: true, tension: .3, pointRadius: 0 }]},
-    options: opts(undefined, undefined)
-  });
-  
-  const cr = $('cRSI');
-  if (cr) CH.rsi = new Chart(cr.getContext('2d'), {
-    type: 'line',
-    data: { labels: [], datasets: [{ data: [], borderColor: '#ffab00', borderWidth: 1.5, tension: .3, pointRadius: 0, fill: false }]},
-    options: opts(0, 100)
-  });
-  
-  const cc = $('cConf');
-  if (cc) CH.conf = new Chart(cc.getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderWidth: 0, borderRadius: 2 }] },
-    options: opts(0, 100)
-  });
-}
-
-function updateCharts(a) {
-  if (!a) return;
-  
-  const t = new Date().toLocaleTimeString('en-US', {hour12: false, hour: '2-digit', minute: '2-digit'});
-  
-  S.rsiHist.push({t, v: a.rsi});
-  if (S.rsiHist.length > 60) S.rsiHist.shift();
-  
-  S.confHist.push({t, v: a.conf, s: a.sig});
-  if (S.confHist.length > 40) S.confHist.shift();
-  
-  if (CH.main && S.priceHist.length > 1) {
-    const samp = S.priceHist.filter((_, i) => i % S.chartSample === 0 || i === S.priceHist.length - 1);
-    CH.main.data.labels = samp.map(h => h.t);
-    CH.main.data.datasets[0].data = samp.map(h => h.p);
-    CH.main.update('none');
-  }
-  
-  if (CH.rsi) {
-    CH.rsi.data.labels = S.rsiHist.map(h => h.t);
-    CH.rsi.data.datasets[0].data = S.rsiHist.map(h => h.v);
-    CH.rsi.update('none');
-  }
-  
-  if (CH.conf) {
-    CH.conf.data.labels = S.confHist.map(h => h.t);
-    CH.conf.data.datasets[0].data = S.confHist.map(h => h.v);
-    CH.conf.data.datasets[0].backgroundColor = S.confHist.map(h => h.s === 'BUY' ? 'rgba(0,230,118,.6)' : h.s === 'SELL' ? 'rgba(255,23,68,.6)' : 'rgba(120,130,180,.3)');
-    CH.conf.update('none');
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-// STARTUP
-// ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
-  initCharts();
-  tickClock();
-  setInterval(tickClock, 1000);
-  
-  document.addEventListener('click', () => initAudio(), { once: true });
-  
-  // Load BTC candle history
-  await loadCandles();
-  
-  // Connect Binance WS
-  wsConnect();
-  
-  // Try Predict.fun API
-  await pfUpdate();
-  
-  // Start auto-update
-  startPfAutoUpdate();
-  
-  // Start analysis
-  setTimeout(runAnalysis, 1500);
-  analysisTimer = setInterval(runAnalysis, S.interval);
-  
-  // Periodic candle reload
-  setInterval(loadCandles, 60000);
-});
-
-// Cleanup on unload
-window.addEventListener('beforeunload', () => {
-  if (analysisTimer) clearInterval(analysisTimer);
-  if (pfUpdateTimer) clearInterval(pfUpdateTimer);
-  if (wsRef) wsRef.close();
-});
-</script>
-</body>
-</html>
+// ═══════════════════
